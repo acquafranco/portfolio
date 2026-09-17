@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* -------------------------------------------------------------------------
+   Design tokens
+   Concept: a technical/blueprint register — Franco spent years reading
+   elevator schematics before he started reading code. The vertical "spec
+   line" running down the page, the corner-marked image frames and the
+   tick-marked section markers all come from that vocabulary instead of a
+   generic SaaS look.
+   ---------------------------------------------------------------------- */
+:root {
+    --color-graphite: #101317;
+    --color-graphite-soft: #171b21;
+    --color-paper: #f5f3ee;
+    --color-steel: #2b313a;
+    --color-steel-soft: #1d222a;
+    --color-amber: #ff6a1a;
+    --color-slate: #9aa1ac;
+
+    --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    --measure: 62ch;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+body {
+    background-color: var(--color-graphite);
+    color: var(--color-paper);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+    font-family: var(--font-display);
+}
+
+/* -- Spec line ------------------------------------------------------------
+   A vertical rule with small perpendicular ticks, echoing a measurement
+   guide on a technical drawing. Sits to the left of each major section on
+   wide screens; collapses to a plain top rule on mobile. */
+.spec-line {
+    position: relative;
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--color-steel);
+}
+
+.spec-line::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 0;
+    width: 10px;
+    height: 1px;
+    background: var(--color-steel);
+}
+
+.spec-mark {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--color-slate);
+}
+
+/* -- Corner-marked frame ----------------------------------------------------
+   Used around project imagery, in place of a rounded card + shadow. Reads
+   like crop marks on a technical print rather than decoration. */
+.corner-frame {
+    position: relative;
+    border: 1px solid var(--color-steel);
+    background: var(--color-steel-soft);
+}
+
+.corner-frame::before,
+.corner-frame::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: var(--color-amber);
+}
+
+.corner-frame::before {
+    top: -1px;
+    left: -1px;
+    border-top: 2px solid var(--color-amber);
+    border-left: 2px solid var(--color-amber);
+}
+
+.corner-frame::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 2px solid var(--color-amber);
+    border-right: 2px solid var(--color-amber);
+}
+
+/* -- Hero entrance ----------------------------------------------------------
+   One single orchestrated reveal on page load. Nothing else on the page
+   animates on scroll. */
+@media (prefers-reduced-motion: no-preference) {
+    .hero-reveal {
+        opacity: 0;
+        transform: translateY(10px);
+        animation: hero-reveal 0.7s ease-out forwards;
+    }
+
+    .hero-reveal-delay-1 {
+        animation-delay: 0.1s;
+    }
+
+    .hero-reveal-delay-2 {
+        animation-delay: 0.2s;
+    }
+
+    .hero-reveal-delay-3 {
+        animation-delay: 0.3s;
+    }
+}
+
+@keyframes hero-reveal {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* -- Focus states ------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 3px;
+}
+
+::selection {
+    background: var(--color-amber);
+    color: var(--color-graphite);
+}

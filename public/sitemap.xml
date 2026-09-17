@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TODO-FRANCO: reemplazá https://PLACEHOLDER-DOMINIO.com por tu dominio real -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://PLACEHOLDER-DOMINIO.com/es</loc>
+        <xhtml:link rel="alternate" hreflang="es" href="https://PLACEHOLDER-DOMINIO.com/es"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://PLACEHOLDER-DOMINIO.com/pt"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://PLACEHOLDER-DOMINIO.com/en"/>
+    </url>
+    <url>
+        <loc>https://PLACEHOLDER-DOMINIO.com/pt</loc>
+        <xhtml:link rel="alternate" hreflang="es" href="https://PLACEHOLDER-DOMINIO.com/es"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://PLACEHOLDER-DOMINIO.com/pt"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://PLACEHOLDER-DOMINIO.com/en"/>
+    </url>
+    <url>
+        <loc>https://PLACEHOLDER-DOMINIO.com/en</loc>
+        <xhtml:link rel="alternate" hreflang="es" href="https://PLACEHOLDER-DOMINIO.com/es"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://PLACEHOLDER-DOMINIO.com/pt"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://PLACEHOLDER-DOMINIO.com/en"/>
+    </url>
+</urlset>

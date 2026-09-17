@@ -67,7 +67,7 @@ return [
             'status' => 'active', // active | in_progress | exploration
             'stack' => ['Laravel 11', 'Filament', 'Blade', 'Tailwind CSS', 'Alpine.js', 'MySQL', 'Mercado Pago API', 'WhatsApp Business API'],
             'links' => [
-                'live' => 'PLACEHOLDER', // ej: https://ascento.online
+                'live' => 'https://ascento.online', // ej: https://ascento.online
                 'github' => null, // repo privado — dejar null si no es público
             ],
             'image' => '/images/projects/ascento/cover.PNG', // PLACEHOLDER: agregar imagen real

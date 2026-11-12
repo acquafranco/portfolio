@@ -75,11 +75,11 @@ return [
 
     'about' => [
         'eyebrow' => 'Sobre mí',
-        'heading' => 'De técnico de ascensores a creador de software.',
+        'heading' => 'Más de 10 años convirtiendo el caos operativo en software que trabaja por vos.',
         'paragraphs' => [
-            'Empecé trabajando en el mundo de los ascensores, no del software. Instalación, mantenimiento, clientes, técnicos y edificios: problemas concretos que se resuelven en el terreno, no en una pizarra.',
-            'Automatizando mi propio trabajo encontré lo que realmente me interesa: convertir procesos desordenados en sistemas que funcionan solos.',
-            'Hoy construyo productos completos. Entiendo el problema de negocio, diseño la solución, escribo el código y lo pongo en producción. Vivo en Brasil, desarrollo mis propios productos y trabajo también como freelance.',
+            'Hay negocios que funcionan a pesar de sus herramientas: pedidos que se pierden en un grupo de WhatsApp, planillas que solo entiende una persona, clientes que llaman para preguntar algo que nadie sabe responder. Cada día, ese desorden cuesta plata, tiempo y confianza.',
+            'Hace más de 10 años que construyo software y aprendí que el problema casi nunca es técnico: es entender cómo trabaja la gente de verdad. Por eso, antes de escribir una línea de código, me meto en la operación, escucho a quien la sufre y encuentro exactamente dónde se rompe.',
+            'Hoy diseño, desarrollo y llevo a producción productos completos como Ascento, GULA y DOMUS. Vivo en Brasil y trabajo con empresas que quieren dejar de apagar incendios y empezar a crecer con un sistema que las respalde.',
         ],
     ],
 
@@ -139,16 +139,21 @@ return [
         'heading' => 'Experiencia',
         'periods' => [
             'present' => 'Actualidad',
-            'years' => 'Varios años',
+            'parallel' => 'En paralelo',
+            'decade' => '+10 años',
         ],
         'items' => [
             'products' => [
-                'title' => 'Desarrollo de productos digitales',
-                'description' => 'Diseño y construcción de SaaS y aplicaciones web para negocios reales, de punta a punta: Ascento, GULA y DOMUS, además de proyectos freelance.',
+                'title' => 'Creador de productos SaaS',
+                'description' => 'Diseño, desarrollo y opero mis propios productos de punta a punta: Ascento, GULA y DOMUS. Desde la investigación con clientes reales hasta la infraestructura, los pagos y el soporte. Software que resuelve problemas por los que las empresas pagan.',
             ],
-            'elevators' => [
-                'title' => 'Técnico de ascensores',
-                'description' => 'Antes de construir software para empresas de mantenimiento, trabajé dentro de ese mundo. Conozco de primera mano cómo trabajan los técnicos, cómo se organizan los mantenimientos y dónde aparecen los problemas del día a día.',
+            'custom' => [
+                'title' => 'Software a medida para empresas',
+                'description' => 'Sistemas internos, paneles de gestión e integraciones para negocios que llegaron al límite de las planillas y el WhatsApp. Cada proyecto empieza igual: entender qué está frenando a la empresa y eliminarlo.',
+            ],
+            'fullstack' => [
+                'title' => 'Desarrollador full-stack',
+                'description' => 'Más de una década construyendo aplicaciones web: backend, frontend, bases de datos, APIs y servidores. Años de proyectos reales que me enseñaron a priorizar lo que importa: software estable, fácil de mantener y que se entiende sin manual.',
             ],
         ],
     ],

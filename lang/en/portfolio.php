@@ -75,11 +75,11 @@ return [
 
     'about' => [
         'eyebrow' => 'About',
-        'heading' => 'From elevator technician to software builder.',
+        'heading' => '10+ years turning operational chaos into software that works for you.',
         'paragraphs' => [
-            'I started out in the elevator industry, not in software. Installation, maintenance, clients, technicians and buildings: concrete problems solved on site, not on a whiteboard.',
-            'Automating my own work, I found what really drives me: turning messy processes into systems that run on their own.',
-            'Today I build complete products. I understand the business problem, design the solution, write the code and ship it to production. I live in Brazil, build my own products and also work as a freelancer.',
+            'Some businesses run in spite of their tools: orders lost in a WhatsApp group, spreadsheets only one person understands, clients calling to ask something nobody can answer. Every day, that mess costs money, time and trust.',
+            'I\'ve been building software for more than 10 years, and I\'ve learned the problem is rarely technical: it\'s understanding how people actually work. So before writing a single line of code, I dig into the operation, listen to the people living with it and find exactly where it breaks.',
+            'Today I design, build and ship complete products like Ascento, GULA and DOMUS. I live in Brazil and work with companies that want to stop putting out fires and start growing on a system that has their back.',
         ],
     ],
 
@@ -139,16 +139,21 @@ return [
         'heading' => 'Experience',
         'periods' => [
             'present' => 'Present',
-            'years' => 'Several years',
+            'parallel' => 'Alongside',
+            'decade' => '10+ years',
         ],
         'items' => [
             'products' => [
-                'title' => 'Digital product development',
-                'description' => 'Designing and building SaaS and web applications for real businesses, end to end: Ascento, GULA and DOMUS, plus freelance projects.',
+                'title' => 'SaaS product builder',
+                'description' => 'I design, build and run my own products end to end: Ascento, GULA and DOMUS. From research with real clients to infrastructure, payments and support. Software that solves problems companies are willing to pay for.',
             ],
-            'elevators' => [
-                'title' => 'Elevator technician',
-                'description' => 'Before building software for maintenance companies, I worked inside that world. I know first-hand how technicians work, how maintenance is organized and where day-to-day problems show up.',
+            'custom' => [
+                'title' => 'Custom software for businesses',
+                'description' => 'Internal systems, management dashboards and integrations for businesses that outgrew spreadsheets and WhatsApp. Every project starts the same way: understanding what is holding the company back, and removing it.',
+            ],
+            'fullstack' => [
+                'title' => 'Full-stack developer',
+                'description' => 'More than a decade building web applications: backend, frontend, databases, APIs and servers. Years of real projects that taught me to focus on what matters: stable, maintainable software people understand without a manual.',
             ],
         ],
     ],

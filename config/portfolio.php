@@ -59,7 +59,8 @@ return [
     */
     'experience' => [
         ['key' => 'products', 'period_key' => 'present'],
-        ['key' => 'elevators', 'period_key' => 'years'],
+        ['key' => 'custom', 'period_key' => 'parallel'],
+        ['key' => 'fullstack', 'period_key' => 'decade'],
     ],
 
     'capabilities' => ['product', 'saas', 'automation', 'interfaces', 'business'],

@@ -1,12 +1,11 @@
-@props(['title', 'lead' => null])
+@props(['eyebrow' => null, 'title', 'lead' => null, 'id' => null])
 
-<div class="mb-10 max-w-measure">
-    <h2 class="font-display text-2xl md:text-3xl font-semibold text-paper tracking-tight">
-        {{ $title }}
-    </h2>
+<div {{ $attributes->merge(['class' => 'mb-10 max-w-2xl md:mb-14']) }}>
+    @if ($eyebrow)
+        <p class="eyebrow mb-4">{{ $eyebrow }}</p>
+    @endif
+    <h2 @if ($id) id="{{ $id }}" @endif class="text-3xl font-semibold tracking-tight text-fg md:text-4xl">{{ $title }}</h2>
     @if ($lead)
-        <p class="mt-3 text-slate leading-relaxed">
-            {{ $lead }}
-        </p>
+        <p class="mt-4 text-base leading-relaxed text-muted md:text-lg">{{ $lead }}</p>
     @endif
 </div>

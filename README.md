@@ -1,134 +1,158 @@
-# Portfolio de Franco Acqua — Laravel, sin base de datos
+# Franco Acqua — Portfolio
 
-## Arquitectura
+Sitio personal de Franco Acqua, full-stack developer y creador de productos SaaS. Presenta sus productos —**Ascento**, **GULA** y **DOMUS**— con una página de caso de estudio por proyecto, en español, portugués e inglés.
 
-- **Sin DB, sin modelos Eloquent.** Todo el contenido vive en `config/portfolio.php`
-  (datos estructurales: links, stack, proyectos, orden) y en
-  `lang/{es,pt,en}/portfolio.php` (textos traducidos). Agregar un proyecto nuevo
-  es agregar una entrada en el array de `config/portfolio.php` + su traducción
-  en los tres `lang/*/portfolio.php` — no hay que tocar vistas ni rutas.
-- **Un solo controller** (`PortfolioController`) que arma los datos ya
-  combinados (proyecto + traducción, experiencia + traducción, skills + label
-  traducido) y se los pasa a una única vista `portfolio.home` (one-page).
-- **Idioma por segmento de URL**: `/es`, `/pt`, `/en`. Un middleware
-  (`SetLocale`) valida el segmento contra `config('portfolio.locales')` y
-  aplica el locale de Laravel. `/` redirige a `/{default_locale}`.
-- **Diseño**: estética "plano técnico" — grafito oscuro, tipografía Space
-  Grotesk/Inter, una línea vertical tipo regla de medición ("spec line") como
-  recurso estructural, y marcos con esquinas tipo plano de ingeniería para las
-  imágenes de proyectos. Nace de tu propio recorrido (ascensores → software),
-  no es una plantilla SaaS genérica. Los tokens de color/tipografía están en
-  `resources/css/app.css` y `tailwind.config.js`.
-- **JS mínimo**: sólo Alpine.js, para el menú mobile. Todo lo demás es CSS.
+- Una página principal (`/{locale}`) con hero, productos, perfil, stack, proceso, experiencia y contacto.
+- Un caso de estudio por proyecto (`/{locale}/projects/{slug}`).
+- `sitemap.xml` y `robots.txt` generados a partir de los proyectos y del dominio real.
 
-## Estructura final de archivos
+## Tecnologías
+
+| Capa | Herramienta |
+| --- | --- |
+| Backend | PHP 8.3+ · Laravel 13 |
+| Vistas | Blade (componentes en `resources/views/components`) |
+| Estilos | Tailwind CSS 3 (tokens en `resources/css/app.css` y `tailwind.config.js`) |
+| JS | Alpine.js (menú móvil, filtro por estado, copiar email) |
+| Build | Vite 8 |
+| Tests | PHPUnit 12 |
+
+El sitio **no usa base de datos, sesiones ni cookies**: todo el contenido vive en archivos de configuración y de idioma. Cada página es pública, cacheable y no depende de MySQL.
+
+## Organización
 
 ```
-app/Http/Controllers/PortfolioController.php
-app/Http/Middleware/SetLocale.php
-config/portfolio.php
-lang/es/portfolio.php
-lang/pt/portfolio.php
-lang/en/portfolio.php
-resources/css/app.css
-resources/js/app.js
-resources/views/components/layout.blade.php       (layout con <head>, SEO, navbar, footer)
-resources/views/components/navbar.blade.php
-resources/views/components/language-switcher.blade.php
-resources/views/components/section-heading.blade.php
-resources/views/components/button.blade.php
-resources/views/components/project-card.blade.php
-resources/views/components/skill-badge.blade.php
-resources/views/components/timeline-item.blade.php
-resources/views/components/footer.blade.php
-resources/views/portfolio/home.blade.php
-resources/views/errors/404.blade.php
-routes/web.php
-public/favicon.svg
-public/robots.txt
-public/sitemap.xml
-public/images/projects/ascento/   (vacía — falta la imagen real)
-public/images/projects/gula/      (vacía — falta la imagen real)
-public/cv/                        (vacía — faltan los 3 PDF)
-tailwind.config.js
-postcss.config.js
-vite.config.js
+config/
+  portfolio.php            Perfil: nombre, links, CV, stack, experiencia, SEO
+  projects/                Un archivo por proyecto (el nombre del archivo es el slug)
+    ascento.php
+    gula.php
+    domus.php
+lang/{es,pt,en}/portfolio.php   Textos de la interfaz
+app/
+  Portfolio/
+    Project.php            Value object de un proyecto ya resuelto para un idioma
+    ProjectStatus.php      Enum: production | development | experimental
+    ProjectRepository.php  Lee, valida, ordena y traduce los proyectos
+    Localization.php       URLs por idioma, hreflang, CV por idioma
+  Http/
+    Controllers/PortfolioController.php   Home, caso de estudio, redirección por idioma
+    Controllers/SeoController.php         sitemap.xml y robots.txt
+    Middleware/SetLocale.php              Idioma desde /es, /pt, /en
+    Middleware/SecurityHeaders.php        Cabeceras de seguridad
+  Console/Commands/
+    MakePortfolioProject.php   php artisan portfolio:make-project
+    ListPortfolioProjects.php  php artisan portfolio:projects
+resources/views/
+  portfolio/home.blade.php, portfolio/project.blade.php
+  components/              layout, navbar, footer, project-showcase, project-card, project-media, …
+  errors/                  404 (con el diseño del sitio), 500 y 503 (autónomas)
+public/images/projects/{slug}/  Capturas y logos de cada proyecto (WebP)
 ```
 
-## Instrucciones exactas para ejecutarlo
+## Agregar un proyecto
 
-Este ZIP no es un proyecto Laravel completo (no incluye `vendor/`, `artisan`
-ni el resto del scaffolding) — es el conjunto de archivos a copiar dentro de
-un proyecto Laravel nuevo.
+Un proyecto = **un archivo**. No hay que tocar vistas, rutas, traducciones ni el sitemap.
 
 ```bash
-# 1. Crear el proyecto base
-composer create-project laravel/laravel portfolio-franco
-cd portfolio-franco
-
-# 2. Copiar todos los archivos de este ZIP dentro del proyecto,
-#    respetando las carpetas (sobrescribir routes/web.php es esperado)
-
-# 3. Instalar dependencias de front
-npm install
-npm install -D tailwindcss@^3 postcss autoprefixer
-npm install alpinejs
-
-# 4. Registrar el middleware (Laravel 11 usa bootstrap/app.php).
-#    Abrí bootstrap/app.php y agregá el alias dentro de ->withMiddleware():
-#
-#    ->withMiddleware(function (Illuminate\Foundation\Configuration\Middleware $middleware) {
-#        $middleware->alias([
-#            'setlocale' => \App\Http\Middleware\SetLocale::class,
-#        ]);
-#    })
-
-# 5. Levantar todo
-npm run dev
-php artisan serve
+php artisan portfolio:make-project mi-producto --name="Mi Producto" --status=development --url=https://mi-producto.com --featured
 ```
 
-Abrí `http://localhost:8000` — te va a redirigir a `/es`.
+Esto crea `config/projects/mi-producto.php` con todos los campos y la carpeta `public/images/projects/mi-producto/`. Completá los textos y validá:
 
-Para producción: `npm run build` genera los assets, y en el servidor sólo
-necesitás PHP + el `public/` con el build ya hecho (no hace falta Node en el
-servidor de producción).
+```bash
+php artisan portfolio:projects   # lista los proyectos y valida todos los archivos (exit 1 si hay errores)
+```
 
-## Qué tenés que completar antes de publicar
+### Campos
 
-Todo lo que sigue está marcado con `PLACEHOLDER` en `config/portfolio.php`:
+| Campo | Descripción |
+| --- | --- |
+| `name` | Nombre público. |
+| `order` | Orden de aparición (menor primero). |
+| `featured` | `true`: tarjeta grande destacada. `false`: tarjeta compacta en la grilla. |
+| `status` | `production`, `development` o `experimental` (badge y filtro de la home). |
+| `year` | Año de inicio (opcional). |
+| `url` | Dominio en producción (opcional). |
+| `repository` | Repositorio público de GitHub (opcional). |
+| `links` | Enlaces extra: `[['label' => ['es' => '…', 'en' => '…'], 'url' => 'https://…']]`. |
+| `accent` | Color de identidad del proyecto (`#RRGGBB`): brillo, bordes y detalles. |
+| `logo` | Ícono cuadrado (ruta dentro de `public/`), opcional. |
+| `cover` / `cover_small` | Captura 1200×630 y 720×378 en WebP. Sin captura se muestra la inicial sobre el color del proyecto. |
+| `stack` | Tecnologías. |
+| `content.{es,pt,en}` | `category`, `tagline`, `summary`, `problem`, `solution`, `features` (lista), `audience`, `role`. Solo el idioma por defecto (`es`) es obligatorio: lo que falte en otro idioma se muestra en español. |
 
-1. **Links reales**: email, WhatsApp (`wa.me/...`), LinkedIn, GitHub.
-2. **URL de Ascento** (`config('portfolio.projects.0.links.live')`) — o
-   dejala en `null` si todavía no querés linkearla públicamente.
-3. **Los 3 PDF de CV** en `public/cv/` (`franco-acqua-cv-{es,pt,en}.pdf`).
-4. **Dominio real en `public/sitemap.xml`** (reemplazar
-   `PLACEHOLDER-DOMINIO.com`).
-5. Revisar si Gula ya tiene GitHub público o link en vivo, y completar
-   `config('portfolio.projects.1.links')`.
+Un archivo inválido nunca rompe el sitio: el proyecto se omite y se registra un warning en el log. `portfolio:projects` y los tests lo reportan como error.
 
-## Qué imágenes deberías agregar
+### Capturas
 
-- `public/images/projects/ascento/cover.jpg` — captura del dashboard o de
-  una vista representativa (recomendado 1200×900 o similar 4:3).
-- `public/images/projects/gula/cover.jpg` — captura de la carta digital.
-- `public/images/og-cover.jpg` — imagen 1200×630 para preview al compartir
-  el link (redes, WhatsApp, etc.).
-- (Opcional) reemplazar `public/favicon.svg`, que hoy es un placeholder
-  simple con el ícono del ascensor.
+```bash
+cwebp -q 80 -resize 1200 630 captura.png -o public/images/projects/mi-producto/cover.webp
+cwebp -q 78 -resize 720 378  captura.png -o public/images/projects/mi-producto/cover-720.webp
+```
 
-## Qué deberías personalizar antes de publicar
+## Otros contenidos
 
-- Revisar los textos de `lang/*/portfolio.php` — están escritos para sonar
-  como vos, pero son un punto de partida: ajustá lo que no te represente.
-  El portugués es una traducción natural pensada para Brasil, no literal
-  desde el español — igual, dale una lectura si tenés a alguien nativo cerca.
-- Los años de experiencia quedaron deliberadamente sin fechas exactas
-  ("Actualidad" / "Varios años") porque no las confirmaste — si querés
-  fechas concretas, se agregan en `config('portfolio.experience')` y en
-  `lang/*/portfolio.php` → `experience.periods`.
-- Ninguna métrica (usuarios, facturación, clientes) está inventada — si en
-  algún momento tenés números reales para mostrar, hay lugar pensado en la
-  sección de cada proyecto (`project-card.blade.php`, bloque `<dl>`) para
-  agregarlos sin rehacer el layout.
-# portfolio
+- **Textos de la interfaz:** `lang/{es,pt,en}/portfolio.php`.
+- **Links, CV, stack, experiencia:** `config/portfolio.php`. El CV de cada idioma va en `public/cv/`; si un idioma no tiene CV se ofrece el del idioma por defecto.
+- **Imagen para compartir (Open Graph):** `public/images/og-cover.png` (1200×630). Cada caso de estudio usa la captura de su proyecto.
+
+## Ejecutar localmente
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+npm install
+npm run build        # o: npm run dev
+php artisan serve    # http://localhost:8000 → redirige a /es, /pt o /en según el navegador
+```
+
+Tests:
+
+```bash
+php artisan test
+```
+
+## Configuración
+
+Variables de entorno relevantes:
+
+| Variable | Valor en producción |
+| --- | --- |
+| `APP_ENV` | `production` |
+| `APP_DEBUG` | `false` |
+| `APP_URL` | URL pública con `https://` (fuerza URLs https en canonical, Open Graph y sitemap) |
+| `APP_KEY` | Generada con `php artisan key:generate` |
+
+No hace falta base de datos: el sitio no usa sesiones ni modelos. Las variables `DB_*`, `SESSION_*` y `CACHE_*` pueden quedar como estén.
+
+## Deploy (Laravel Forge)
+
+`public/build` no se versiona, así que el servidor compila los assets. Script de deploy recomendado:
+
+```bash
+cd $FORGE_SITE_PATH
+git pull origin $FORGE_SITE_BRANCH
+
+$FORGE_COMPOSER install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+npm ci
+npm run build
+
+$FORGE_PHP artisan portfolio:projects   # aborta el deploy si un proyecto es inválido
+$FORGE_PHP artisan optimize             # config, rutas, vistas y eventos en caché
+
+( flock -w 10 9 || exit 1
+    echo 'Restarting FPM...'; sudo -S service $FORGE_PHP_FPM reload ) 9>/tmp/fpmlock
+```
+
+No hay migraciones que correr. Después de cambiar un archivo de `config/projects/` hay que volver a deployar (o correr `php artisan optimize`) porque la configuración queda en caché.
+
+Verificación después del deploy:
+
+```bash
+curl -I https://<dominio>/es          # 200, sin Set-Cookie
+curl https://<dominio>/sitemap.xml    # todas las URLs con el dominio real
+curl https://<dominio>/up             # health check de Laravel
+```

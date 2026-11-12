@@ -1,66 +1,30 @@
 @props(['project'])
 
-<article class="grid md:grid-cols-5 gap-8 md:gap-10 py-12 border-t border-steel">
-    <div class="md:col-span-2">
-        <div class="corner-frame overflow-hidden">
-            <img
-                src="{{ asset($project['image']) }}"
-                alt="{{ $project['name'] }}"
-                loading="lazy"
-                class="w-full h-auto block"
-            >
-        </div>
+{{-- Compact card for non-featured projects. --}}
+<article
+    aria-labelledby="project-{{ $project->slug }}"
+    style="--accent: {{ $project->accent }}"
+    {{ $attributes->merge(['class' => 'card group relative flex flex-col p-6 transition-colors hover:border-subtle/60']) }}
+>
+    <div class="mb-5 flex items-start justify-between gap-3">
+        <x-project-logo :project="$project" :size="36" />
+        <x-status-badge :status="$project->status" />
     </div>
 
-    <div class="md:col-span-3">
-        <div class="flex items-start justify-between gap-4 flex-wrap mb-1">
-            <h3 class="font-display text-xl font-semibold text-paper">{{ $project['name'] }}</h3>
-            <span class="text-xs text-slate border border-steel px-2 py-1 whitespace-nowrap">
-                {{ $project['statusLabel'] }}
-            </span>
-        </div>
+    <h3 id="project-{{ $project->slug }}" class="text-lg font-semibold tracking-tight text-fg">
+        <a href="{{ route('projects.show', ['slug' => $project->slug]) }}" class="after:absolute after:inset-0 after:rounded-2xl">{{ $project->name }}</a>
+    </h3>
+    <p class="mt-1 font-mono text-xs text-subtle">{{ $project->category }}</p>
+    <p class="mt-4 flex-1 text-sm leading-relaxed text-muted">{{ $project->tagline }}</p>
 
-        <p class="text-xs text-slate mb-5">{{ $project['category'] }}</p>
+    <ul class="mt-5 flex flex-wrap gap-1.5" aria-label="{{ __('portfolio.projects.stack') }}">
+        @foreach (array_slice($project->stack, 0, 4) as $tech)
+            <li class="chip">{{ $tech }}</li>
+        @endforeach
+    </ul>
 
-        <p class="text-paper/90 leading-relaxed mb-6 max-w-measure">{{ $project['description'] }}</p>
-
-        <dl class="grid sm:grid-cols-2 gap-6 mb-6 text-sm">
-            <div>
-                <dt class="text-slate mb-1">{{ $project['labels']['problem'] }}</dt>
-                <dd class="text-paper/90 leading-relaxed">{{ $project['problem'] }}</dd>
-            </div>
-            <div>
-                <dt class="text-slate mb-1">{{ $project['labels']['solution'] }}</dt>
-                <dd class="text-paper/90 leading-relaxed">{{ $project['solution'] }}</dd>
-            </div>
-        </dl>
-
-        @if (!empty($project['explorationNote']))
-            <p class="text-sm text-slate italic mb-6 max-w-measure">{{ $project['explorationNote'] }}</p>
-        @endif
-
-        <div class="mb-6">
-            <p class="text-slate text-xs mb-2">{{ $project['labels']['stack'] }}</p>
-            <ul class="flex flex-wrap gap-2 text-xs">
-                @foreach ($project['stack'] as $tech)
-                    <li class="border border-steel px-2 py-1 text-slate">{{ $tech }}</li>
-                @endforeach
-            </ul>
-        </div>
-
-        @if ($project['live'] || $project['github'])
-            <div class="flex flex-wrap gap-4">
-                @if ($project['live'])
-                    <x-button variant="secondary" :href="$project['live']" external>
-                        {{ $project['labels']['visit'] }}
-                    </x-button>
-                @endif
-                @if ($project['github'])
-                    <x-button variant="secondary" :href="$project['github']" external>
-                        {{ $project['labels']['code'] }}
-                    </x-button>
-                @endif
-            </div>
-        @endif
-    </div>
+    <span class="mt-6 inline-flex items-center gap-1.5 text-sm text-fg" aria-hidden="true">
+        {{ __('portfolio.projects.case_study') }}
+        <x-icon name="arrow-right" class="transition-transform group-hover:translate-x-0.5" />
+    </span>
 </article>

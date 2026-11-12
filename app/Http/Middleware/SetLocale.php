@@ -4,26 +4,25 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetLocale
 {
     /**
-     * Resuelve el idioma desde el segmento {locale} de la URL (/es, /pt, /en)
-     * y lo aplica a la app. Si el segmento no es uno de los soportados,
-     * devuelve 404 en vez de asumir un idioma por defecto silenciosamente.
+     * Apply the locale from the {locale} URL segment (/es, /pt, /en) and make
+     * it the default parameter for route() so views don't have to pass it.
      */
     public function handle(Request $request, Closure $next): Response
     {
         $locale = $request->route('locale');
 
-        $supported = array_keys(config('portfolio.locales'));
-
-        if (! in_array($locale, $supported, true)) {
+        if (! is_string($locale) || ! array_key_exists($locale, config('portfolio.locales'))) {
             abort(404);
         }
 
         app()->setLocale($locale);
+        URL::defaults(['locale' => $locale]);
 
         return $next($request);
     }

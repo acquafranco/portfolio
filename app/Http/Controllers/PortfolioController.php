@@ -2,79 +2,92 @@
 
 namespace App\Http\Controllers;
 
+use App\Portfolio\Project;
+use App\Portfolio\ProjectRepository;
+use App\Portfolio\ProjectStatus;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PortfolioController extends Controller
 {
+    public function __construct(private readonly ProjectRepository $projects) {}
+
     /**
-     * Página principal del portfolio (one-page): hero, sobre mí, qué hago,
-     * proyectos, experiencia, cómo trabajo y contacto.
-     *
-     * Los datos "estructurales" (links, stack, orden, slugs) viven en
-     * config/portfolio.php. Los textos por idioma viven en
-     * lang/{locale}/portfolio.php. Acá simplemente los combinamos.
+     * "/" → "/{locale}" using the browser's Accept-Language when it matches a
+     * supported language, otherwise the default one.
+     */
+    public function redirectToLocale(Request $request): RedirectResponse
+    {
+        $supported = array_keys(config('portfolio.locales'));
+        $default = config('portfolio.default_locale');
+
+        $locale = $request->headers->has('Accept-Language')
+            ? $request->getPreferredLanguage([$default, ...array_diff($supported, [$default])])
+            : $default;
+
+        return redirect()
+            ->route('home', ['locale' => in_array($locale, $supported, true) ? $locale : $default])
+            ->setVary('Accept-Language');
+    }
+
+    /**
+     * One-page home: hero, products, about, stack, process, experience, contact.
      */
     public function home(): View
     {
+        $projects = $this->projects->all();
+
         return view('portfolio.home', [
-            'profile' => config('portfolio'),
-            'skillGroups' => $this->skillGroups(),
-            'projects' => $this->projects(),
-            'experience' => $this->experience(),
+            'projects' => $projects,
+            'statusFilters' => $this->statusFilters($projects->all()),
+            'skillGroups' => collect(config('portfolio.skills'))
+                ->map(fn (array $group): array => [
+                    'label' => __('portfolio.skills.groups.'.$group['group']),
+                    'items' => $group['items'],
+                ])
+                ->all(),
+            'experience' => collect(config('portfolio.experience'))
+                ->map(fn (array $item): array => [
+                    'period' => __('portfolio.experience.periods.'.$item['period_key']),
+                    'title' => __('portfolio.experience.items.'.$item['key'].'.title'),
+                    'description' => __('portfolio.experience.items.'.$item['key'].'.description'),
+                ])
+                ->all(),
         ]);
     }
 
-    private function skillGroups(): array
+    /**
+     * Case-study page for a single project.
+     */
+    public function project(string $locale, string $slug): View
     {
-        return collect(config('portfolio.skills'))
-            ->map(fn (array $group) => [
-                'label' => __('portfolio.skills.groups.'.$group['group']),
-                'items' => $group['items'],
-            ])
-            ->all();
+        $project = $this->projects->find($slug) ?? abort(404);
+
+        return view('portfolio.project', [
+            'project' => $project,
+            'next' => $this->projects->next($project),
+        ]);
     }
 
-    private function projects(): array
+    /**
+     * Status filter chips for the projects grid: only statuses that actually
+     * have projects, with their counts.
+     *
+     * @param  list<Project>  $projects
+     * @return list<array{value: string, label: string, count: int}>
+     */
+    private function statusFilters(array $projects): array
     {
-        $labels = [
-            'problem' => __('portfolio.projects.labels.problem'),
-            'solution' => __('portfolio.projects.labels.solution'),
-            'stack' => __('portfolio.projects.labels.stack'),
-            'visit' => __('portfolio.projects.labels.visit'),
-            'code' => __('portfolio.projects.labels.code'),
-        ];
+        $counts = array_count_values(array_map(fn (Project $project): string => $project->status->value, $projects));
 
-        return collect(config('portfolio.projects'))
-            ->map(function (array $project) use ($labels) {
-                $translated = __('portfolio.projects.items.'.$project['slug']);
-
-                return [
-                    'slug' => $project['slug'],
-                    'name' => $project['name'],
-                    'statusLabel' => __('portfolio.projects.status.'.$project['status']),
-                    'category' => $translated['category'],
-                    'description' => $translated['description'],
-                    'problem' => $translated['problem'],
-                    'solution' => $translated['solution'],
-                    'explorationNote' => $translated['exploration_note'] ?? null,
-                    'stack' => $project['stack'],
-                    'image' => $project['image'],
-                    'live' => $project['links']['live'] === 'PLACEHOLDER' ? null : $project['links']['live'],
-                    'github' => $project['links']['github'],
-                    'labels' => $labels,
-                ];
-            })
-            ->all();
-    }
-
-    private function experience(): array
-    {
-        return collect(config('portfolio.experience'))
-            ->map(fn (array $item) => [
-                'period' => __('portfolio.experience.periods.'.$item['period_key']),
-                'title' => __('portfolio.experience.items.'.$item['key'].'.title'),
-                'description' => __('portfolio.experience.items.'.$item['key'].'.description'),
-            ])
-            ->all();
+        return array_values(array_map(
+            fn (ProjectStatus $status): array => [
+                'value' => $status->value,
+                'label' => $status->label(),
+                'count' => $counts[$status->value],
+            ],
+            array_filter(ProjectStatus::cases(), fn (ProjectStatus $status): bool => isset($counts[$status->value])),
+        ));
     }
 }

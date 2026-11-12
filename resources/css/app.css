@@ -4,160 +4,208 @@
 
 /* -------------------------------------------------------------------------
    Design tokens
-   Concept: a technical/blueprint register — Franco spent years reading
-   elevator schematics before he started reading code. The vertical "spec
-   line" running down the page, the corner-marked image frames and the
-   tick-marked section markers all come from that vocabulary instead of a
-   generic SaaS look.
+   Dark, quiet and precise. Neutral surfaces let each product bring its own
+   colour (--accent, set per project). Amber is Franco's personal mark,
+   used sparingly — a nod to years of reading elevator schematics.
    ---------------------------------------------------------------------- */
 :root {
-    --color-graphite: #101317;
-    --color-graphite-soft: #171b21;
-    --color-paper: #f5f3ee;
-    --color-steel: #2b313a;
-    --color-steel-soft: #1d222a;
-    --color-amber: #ff6a1a;
-    --color-slate: #9aa1ac;
+    --color-ink: 9 10 12;
+    --color-surface: 16 18 22;
+    --color-raised: 22 25 30;
+    --color-line: 35 39 46;
+    --color-fg: 237 238 240;
+    --color-muted: 155 161 171;
+    --color-subtle: 125 131 142;
+    --color-amber: 255 106 26;
+    --color-live: 52 211 153;
 
-    --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-    --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
-
-    --measure: 62ch;
+    color-scheme: dark;
 }
 
-html {
-    scroll-behavior: smooth;
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 5rem;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        @apply bg-ink text-fg font-sans antialiased;
+        font-feature-settings: 'ss01', 'cv11';
+        text-rendering: optimizeLegibility;
+    }
+
+    h1,
+    h2,
+    h3 {
+        text-wrap: balance;
+    }
+
+    p {
+        text-wrap: pretty;
+    }
+
+    :focus-visible {
+        outline: 2px solid rgb(var(--color-amber));
+        outline-offset: 3px;
+        border-radius: 6px;
+    }
+
+    ::selection {
+        background: rgb(var(--color-amber));
+        color: rgb(var(--color-ink));
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+@layer components {
+    .container-site {
+        @apply mx-auto w-full max-w-site px-5 sm:px-8;
+    }
+
+    .eyebrow {
+        @apply inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-muted;
+    }
+
+    .eyebrow::before {
+        content: '';
+        @apply h-px w-6 bg-amber;
+    }
+
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition duration-200 ease-out;
+    }
+
+    .btn-primary {
+        @apply btn bg-fg text-ink hover:bg-white;
+    }
+
+    .btn-secondary {
+        @apply btn border border-line bg-surface/60 text-fg hover:border-subtle hover:bg-raised;
+    }
+
+    .btn-ghost {
+        @apply btn px-3 text-muted hover:text-fg;
+    }
+
+    .chip {
+        @apply inline-flex items-center rounded-full border border-line bg-surface px-3 py-1 text-xs text-muted;
+    }
+
+    .card {
+        @apply rounded-2xl border border-line bg-surface;
+    }
+
+    .link-underline {
+        @apply underline decoration-line underline-offset-4 transition-colors hover:decoration-fg;
+    }
+
+    /* Each project sets --accent inline. */
+    .accent-dot {
+        background: var(--accent, rgb(var(--color-amber)));
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, rgb(var(--color-amber))) 22%, transparent);
+    }
+
+    .accent-text {
+        color: var(--accent, rgb(var(--color-amber)));
+    }
+
+    .accent-glow {
+        background: radial-gradient(60% 60% at 70% 30%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 70%);
+    }
+
+    .grid-backdrop {
+        background-image:
+            linear-gradient(to right, rgb(var(--color-line) / 0.45) 1px, transparent 1px),
+            linear-gradient(to bottom, rgb(var(--color-line) / 0.45) 1px, transparent 1px);
+        background-size: 56px 56px;
+        mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
+    }
+
+    .status-dot-live {
+        @apply relative inline-flex h-2 w-2 rounded-full bg-live;
+    }
+
+    .media-placeholder {
+        background:
+            linear-gradient(110deg, transparent 40%, rgb(var(--color-line) / 0.35) 50%, transparent 60%) 0 0 / 200% 100%,
+            rgb(var(--color-raised));
+    }
+}
+
+/* -- Motion -----------------------------------------------------------------
+   One entrance on the hero and a soft reveal on images once they load.
+   Nothing animates on scroll; everything is off for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+    .reveal {
+        animation: reveal 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+
+    .reveal-1 {
+        animation-delay: 0.06s;
+    }
+
+    .reveal-2 {
+        animation-delay: 0.12s;
+    }
+
+    .reveal-3 {
+        animation-delay: 0.18s;
+    }
+
+    .reveal-4 {
+        animation-delay: 0.24s;
+    }
+
+    .media-placeholder {
+        animation: shimmer 1.6s linear infinite;
+    }
+
+    .status-dot-live::after {
+        content: '';
+        @apply absolute inset-0 rounded-full bg-live;
+        animation: ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+}
+
+@keyframes reveal {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes shimmer {
+    to {
+        background-position: -200% 0, 0 0;
+    }
+}
+
+@keyframes ping {
+    75%,
+    100% {
+        transform: scale(2.4);
+        opacity: 0;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
     }
+
     *,
     *::before,
     *::after {
         animation-duration: 0.001ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.001ms !important;
-        scroll-behavior: auto !important;
     }
-}
-
-body {
-    background-color: var(--color-graphite);
-    color: var(--color-paper);
-    font-family: var(--font-body);
-    -webkit-font-smoothing: antialiased;
-}
-
-h1,
-h2,
-h3,
-.font-display {
-    font-family: var(--font-display);
-}
-
-/* -- Spec line ------------------------------------------------------------
-   A vertical rule with small perpendicular ticks, echoing a measurement
-   guide on a technical drawing. Sits to the left of each major section on
-   wide screens; collapses to a plain top rule on mobile. */
-.spec-line {
-    position: relative;
-    padding-left: 1.5rem;
-    border-left: 1px solid var(--color-steel);
-}
-
-.spec-line::before {
-    content: '';
-    position: absolute;
-    left: -1px;
-    top: 0;
-    width: 10px;
-    height: 1px;
-    background: var(--color-steel);
-}
-
-.spec-mark {
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    letter-spacing: 0.02em;
-    color: var(--color-slate);
-}
-
-/* -- Corner-marked frame ----------------------------------------------------
-   Used around project imagery, in place of a rounded card + shadow. Reads
-   like crop marks on a technical print rather than decoration. */
-.corner-frame {
-    position: relative;
-    border: 1px solid var(--color-steel);
-    background: var(--color-steel-soft);
-}
-
-.corner-frame::before,
-.corner-frame::after {
-    content: '';
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border-color: var(--color-amber);
-}
-
-.corner-frame::before {
-    top: -1px;
-    left: -1px;
-    border-top: 2px solid var(--color-amber);
-    border-left: 2px solid var(--color-amber);
-}
-
-.corner-frame::after {
-    bottom: -1px;
-    right: -1px;
-    border-bottom: 2px solid var(--color-amber);
-    border-right: 2px solid var(--color-amber);
-}
-
-/* -- Hero entrance ----------------------------------------------------------
-   One single orchestrated reveal on page load. Nothing else on the page
-   animates on scroll. */
-@media (prefers-reduced-motion: no-preference) {
-    .hero-reveal {
-        opacity: 0;
-        transform: translateY(10px);
-        animation: hero-reveal 0.7s ease-out forwards;
-    }
-
-    .hero-reveal-delay-1 {
-        animation-delay: 0.1s;
-    }
-
-    .hero-reveal-delay-2 {
-        animation-delay: 0.2s;
-    }
-
-    .hero-reveal-delay-3 {
-        animation-delay: 0.3s;
-    }
-}
-
-@keyframes hero-reveal {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-[x-cloak] {
-    display: none !important;
-}
-
-/* -- Focus states ------------------------------------------------------- */
-a:focus-visible,
-button:focus-visible {
-    outline: 2px solid var(--color-amber);
-    outline-offset: 3px;
-}
-
-::selection {
-    background: var(--color-amber);
-    color: var(--color-graphite);
 }

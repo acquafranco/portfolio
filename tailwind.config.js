@@ -1,26 +1,29 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    content: [
-        './resources/**/*.blade.php',
-        './resources/**/*.js',
-    ],
+    content: ['./resources/**/*.blade.php', './resources/**/*.js', './config/projects/*.php'],
     theme: {
         extend: {
             colors: {
-                graphite: '#101317',
-                'graphite-soft': '#171b21',
-                paper: '#f5f3ee',
-                steel: '#2b313a',
-                'steel-soft': '#1d222a',
-                amber: '#ff6a1a',
-                slate: '#9aa1ac',
+                ink: 'rgb(var(--color-ink) / <alpha-value>)',
+                surface: 'rgb(var(--color-surface) / <alpha-value>)',
+                raised: 'rgb(var(--color-raised) / <alpha-value>)',
+                line: 'rgb(var(--color-line) / <alpha-value>)',
+                fg: 'rgb(var(--color-fg) / <alpha-value>)',
+                muted: 'rgb(var(--color-muted) / <alpha-value>)',
+                subtle: 'rgb(var(--color-subtle) / <alpha-value>)',
+                amber: 'rgb(var(--color-amber) / <alpha-value>)',
+                live: 'rgb(var(--color-live) / <alpha-value>)',
             },
             fontFamily: {
-                display: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-                body: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                sans: ['Geist', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+                mono: ['"Geist Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
             },
             maxWidth: {
-                measure: '62ch',
+                measure: '64ch',
+                site: '72rem',
+            },
+            letterSpacing: {
+                tightest: '-0.04em',
             },
         },
     },

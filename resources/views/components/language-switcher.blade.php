@@ -1,11 +1,18 @@
-@props(['class' => ''])
+@use('App\Portfolio\Localization')
 
-<div class="{{ $class }} items-center gap-3 text-sm">
-    @foreach (config('portfolio.locales') as $code => $locale)
-        @php $active = app()->getLocale() === $code; @endphp
-        <a href="{{ url('/'.$code) }}" @if ($active) aria-current="page" @endif class="{{ $active ? 'text-paper border-b border-amber' : 'text-slate hover:text-paper' }} transition-colors pb-0.5 inline-flex items-center gap-1.5">
-            <span aria-hidden="true">{{ $locale['flag'] }}</span>
-            <span>{{ strtoupper($code) }}</span>
+<div {{ $attributes->merge(['class' => 'items-center gap-0.5 rounded-full border border-line bg-surface/60 p-0.5 text-xs font-medium']) }} role="group" aria-label="{{ __('portfolio.nav.language') }}">
+    @foreach (Localization::locales() as $code => $locale)
+        @php $active = Localization::current() === $code; @endphp
+        <a
+            href="{{ Localization::urlFor($code) }}"
+            hreflang="{{ $code }}"
+            lang="{{ $code }}"
+            title="{{ $locale['label'] }}"
+            @if ($active) aria-current="true" @endif
+            class="rounded-full px-2.5 py-1.5 font-mono uppercase transition-colors {{ $active ? 'bg-raised text-fg' : 'text-subtle hover:text-fg' }}"
+        >
+            <span class="sr-only">{{ $locale['label'] }}</span>
+            <span aria-hidden="true">{{ $code }}</span>
         </a>
     @endforeach
 </div>

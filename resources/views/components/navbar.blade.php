@@ -1,59 +1,67 @@
 @php
+    $home = route('home');
     $navItems = [
-        '#sobre-mi' => __('portfolio.nav.about'),
-        '#que-hago' => __('portfolio.nav.work'),
-        '#proyectos' => __('portfolio.nav.projects'),
-        '#experiencia' => __('portfolio.nav.experience'),
-        '#contacto' => __('portfolio.nav.contact'),
+        'projects' => __('portfolio.nav.projects'),
+        'about' => __('portfolio.nav.about'),
+        'process' => __('portfolio.nav.process'),
+        'experience' => __('portfolio.nav.experience'),
     ];
 @endphp
 
-<header x-data="{ open: false }" class="border-b border-steel">
-    <div class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
-        <a href="{{ url('/'.app()->getLocale()) }}" class="font-display font-semibold text-2xl md:text-3xl tracking-tight text-paper">
-            {{ config('portfolio.name') }}
+<header x-data="siteNav" @keydown.escape.window="close()" class="sticky top-0 z-50 border-b border-line/70 bg-ink/80 backdrop-blur-xl supports-[backdrop-filter]:bg-ink/65">
+    <div class="container-site flex h-16 items-center justify-between gap-6">
+        <a href="{{ $home }}" class="group flex items-center gap-2.5 font-medium tracking-tight text-fg">
+            <img src="{{ asset('favicon.svg') }}" alt="" width="28" height="28" class="h-7 w-7">
+            <span>{{ config('portfolio.name') }}</span>
         </a>
 
-        <nav class="hidden md:flex items-center gap-8 text-sm text-slate">
-            @foreach ($navItems as $href => $label)
-                <a href="{{ $href }}" class="hover:text-paper transition-colors">{{ $label }}</a>
-            @endforeach
+        <nav aria-label="{{ __('portfolio.nav.label') }}" class="hidden md:block">
+            <ul class="flex items-center gap-1 text-sm text-muted">
+                @foreach ($navItems as $id => $label)
+                    <li><a href="{{ $home }}#{{ $id }}" class="rounded-full px-3 py-2 transition-colors hover:text-fg">{{ $label }}</a></li>
+                @endforeach
+            </ul>
         </nav>
 
-        <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
             <x-language-switcher class="hidden md:flex" />
+            <a href="{{ $home }}#contact" class="btn-primary hidden py-2 md:inline-flex">{{ __('portfolio.nav.cta') }}</a>
 
             <button
                 type="button"
-                @click="open = !open"
-                class="md:hidden text-paper"
-                :aria-expanded="open"
+                @click="toggle()"
+                class="-mr-2 inline-flex h-10 w-10 items-center justify-center rounded-full text-fg transition-colors hover:bg-raised md:hidden"
+                :aria-expanded="open.toString()"
+                aria-expanded="false"
                 aria-controls="mobile-menu"
-                aria-label="{{ __('portfolio.nav.home') }}"
             >
-                <svg x-show="!open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
-                </svg>
-                <svg x-show="open" x-cloak width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
-                </svg>
+                <span class="sr-only" x-text="open ? @js(__('portfolio.nav.close_menu')) : @js(__('portfolio.nav.open_menu'))">{{ __('portfolio.nav.open_menu') }}</span>
+                <x-icon name="menu" :size="22" x-show="!open" />
+                <x-icon name="close" :size="22" x-show="open" x-cloak />
             </button>
         </div>
     </div>
 
     <nav
         id="mobile-menu"
+        aria-label="{{ __('portfolio.nav.label') }}"
         x-show="open"
         x-cloak
-        x-transition:enter="transition ease-out duration-150"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        @click="open = false"
-        class="md:hidden border-t border-steel px-6 py-4 flex flex-col gap-4 text-sm text-slate"
+        x-transition.opacity.duration.150ms
+        class="border-t border-line bg-ink md:hidden"
     >
-        @foreach ($navItems as $href => $label)
-            <a href="{{ $href }}" class="hover:text-paper transition-colors">{{ $label }}</a>
-        @endforeach
-        <x-language-switcher class="inline-flex pt-2 border-t border-steel" />
+        <ul class="container-site flex flex-col py-3 text-base">
+            @foreach ($navItems + ['contact' => __('portfolio.nav.contact')] as $id => $label)
+                <li>
+                    <a href="{{ $home }}#{{ $id }}" @click="close()" class="flex items-center justify-between border-b border-line/60 py-3.5 text-fg">
+                        {{ $label }}
+                        <x-icon name="arrow-right" class="text-subtle" />
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+        <div class="container-site pb-5 pt-1">
+            <x-language-switcher class="flex" />
+        </div>
     </nav>
 </header>

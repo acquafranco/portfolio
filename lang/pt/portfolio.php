@@ -3,56 +3,104 @@
 return [
 
     'nav' => [
-        'home' => 'Início',
+        'label' => 'Navegação principal',
+        'projects' => 'Produtos',
         'about' => 'Sobre mim',
-        'work' => 'O que eu faço',
-        'projects' => 'Projetos',
+        'process' => 'Como trabalho',
         'experience' => 'Experiência',
         'contact' => 'Contato',
+        'cta' => 'Vamos conversar',
+        'open_menu' => 'Abrir menu',
+        'close_menu' => 'Fechar menu',
+        'skip' => 'Pular para o conteúdo',
+        'language' => 'Idioma',
+    ],
+
+    'status' => [
+        'production' => 'Em produção',
+        'development' => 'Em desenvolvimento',
+        'experimental' => 'Experimental',
     ],
 
     'hero' => [
-        'kicker' => 'Franco Acqua',
-        'headline' => 'Construo produtos digitais que transformam problemas reais em software.',
-        'subheadline' => 'Desenvolvedor full-stack focado em aplicações web e SaaS. Antes de programar, trabalhei alguns anos com manutenção de elevadores — então sei como é um problema operacional de verdade antes de tentar resolvê-lo com software.',
-        'cta_projects' => 'Ver projetos',
+        'availability' => 'Disponível para projetos · Brasil',
+        'headline' => 'Construo produtos digitais que organizam negócios reais.',
+        'subheadline' => 'Desenvolvedor full-stack e criador de produtos SaaS. Projeto, programo e coloco em produção software para operações que hoje vivem em papéis, planilhas e grupos de WhatsApp.',
+        'cta_projects' => 'Ver produtos',
         'cta_contact' => 'Vamos conversar',
-        'cta_cv' => 'Baixar currículo',
-        'location' => 'Atualmente no Brasil',
-    ],
-
-    'about' => [
-        'heading' => 'Sobre mim',
-        'paragraphs' => [
-            'Comecei trabalhando no mundo dos elevadores, não no de software. Instalação, manutenção, clientes, técnicos, prédios: problemas concretos que se resolvem no campo, não num quadro branco.',
-            'Em algum momento comecei a automatizar meu próprio trabalho com scripts simples e planilhas, e foi aí que descobri o que realmente me interessa: transformar processos bagunçados em sistemas que funcionam sozinhos.',
-            'Desde então venho construindo software para negócios reais. Desenho a solução, escrevo o código e também entendo o problema de negócio por trás — porque vivi isso de perto antes de programar.',
-            'Hoje moro no Brasil, desenvolvo meus próprios produtos e também atuo como freelancer, unindo conhecimento técnico com experiência direta de um setor industrial que a maioria dos desenvolvedores nunca pisou.',
+        'cta_cv' => 'Baixar CV',
+        'index_label' => 'Produtos',
+        'facts' => [
+            'products' => 'produtos próprios',
+            'live' => 'em produção',
+            'ownership' => 'de ponta a ponta: ideia, código e deploy',
         ],
     ],
 
-    'work' => [
+    'projects' => [
+        'eyebrow' => 'Produtos',
+        'heading' => 'Software que eu projetei, construí e mantenho.',
+        'intro' => 'Cada um nasce de um problema operacional concreto. Sem métricas inventadas: o que você vê é o que está construído.',
+        'filter_label' => 'Filtrar por status',
+        'filter_all' => 'Todos',
+        'problem' => 'O problema',
+        'solution' => 'A solução',
+        'features' => 'O que inclui',
+        'stack' => 'Tecnologias',
+        'visit' => 'Visitar site',
+        'case_study' => 'Ver projeto',
+        'code' => 'Código',
+        'empty' => 'Não há projetos com este status.',
+        'cover_alt' => 'Captura de tela de :name',
+        'opens_new_tab' => '(abre em uma nova aba)',
+    ],
+
+    'project' => [
+        'back' => 'Todos os produtos',
+        'overview' => 'Resumo',
+        'audience' => 'Para quem é',
+        'role' => 'Meu papel',
+        'year' => 'Ano',
+        'status' => 'Status',
+        'category' => 'Categoria',
+        'website' => 'Site',
+        'next' => 'Próximo produto',
+        'cta_heading' => 'Tem um problema parecido no seu negócio?',
+        'cta_text' => 'Me conte como vocês trabalham hoje e vemos se o software pode resolver.',
+    ],
+
+    'about' => [
+        'eyebrow' => 'Sobre mim',
+        'heading' => 'De técnico de elevadores a criador de software.',
+        'paragraphs' => [
+            'Comecei trabalhando no mundo dos elevadores, não do software. Instalação, manutenção, clientes, técnicos e prédios: problemas concretos que se resolvem em campo, não num quadro branco.',
+            'Automatizando meu próprio trabalho encontrei o que realmente me interessa: transformar processos bagunçados em sistemas que funcionam sozinhos.',
+            'Hoje construo produtos completos. Entendo o problema de negócio, desenho a solução, escrevo o código e coloco em produção. Moro no Brasil, desenvolvo meus próprios produtos e também trabalho como freelancer.',
+        ],
+    ],
+
+    'capabilities' => [
         'heading' => 'O que eu faço',
         'items' => [
             'product' => [
-                'title' => 'Desenvolvimento de produtos',
-                'description' => 'Construo aplicações web completas, da ideia até a produção, sem parar no protótipo.',
+                'title' => 'Produtos de ponta a ponta',
+                'description' => 'Da ideia à produção, sem parar no protótipo.',
             ],
             'saas' => [
-                'title' => 'SaaS',
-                'description' => 'Arquiteturas multiempresa, com usuários, papéis e assinaturas, pensadas para crescer sem precisar ser reescritas.',
+                'title' => 'SaaS multiempresa',
+                'description' => 'Usuários, papéis, planos e dados isolados por cliente, pensados para crescer.',
             ],
             'automation' => [
-                'title' => 'Automação',
-                'description' => 'Integrações com APIs e ferramentas externas para tirar trabalho manual do caminho.',
+                'title' => 'Automação e integrações',
+                'description' => 'Pagamentos, mensagens, mapas e faturamento conectados para eliminar trabalho manual.',
             ],
             'interfaces' => [
-                'title' => 'Interfaces',
-                'description' => 'Interfaces claras e diretas, pensadas para quem usa todos os dias — não para uma demonstração.',
+                'title' => 'Interfaces para o dia a dia',
+                'description' => 'Telas claras para o escritório e para o celular de quem está em campo.',
             ],
             'business' => [
-                'title' => 'Soluções para negócios',
-                'description' => 'Software feito sob medida para um problema específico de uma empresa ou profissional, não um modelo genérico.',
+                'title' => 'Software sob medida',
+                'description' => 'Soluções para um problema específico de uma empresa, não um template.',
             ],
         ],
     ],
@@ -68,39 +116,22 @@ return [
         ],
     ],
 
-    'projects' => [
-        'heading' => 'Projetos',
-        'intro' => 'Dois produtos reais que venho construindo. Sem números inventados: se eu não tenho uma métrica confirmada, ela não vai aparecer aqui.',
-        'status' => [
-            'active' => 'Em produção',
-            'in_progress' => 'Em desenvolvimento',
-            'exploration' => 'Exploração',
-        ],
-        'labels' => [
-            'problem' => 'O problema',
-            'solution' => 'A solução',
-            'stack' => 'Tecnologias',
-            'visit' => 'Ver projeto',
-            'code' => 'Código',
-        ],
-        'items' => [
-            'ascento' => [
-                'category' => 'SaaS · Gestão de manutenção',
-                'description' => 'Plataforma para empresas de manutenção de elevadores: clientes, prédios, técnicos, manutenções, inspeções, remessas e cobrança via Mercado Pago, tudo em um só lugar.',
-                'problem' => 'Empresas de manutenção de elevadores costumam ter as informações espalhadas entre WhatsApp, planilhas, papéis e algumas ferramentas soltas.',
-                'solution' => 'Uma plataforma centralizada para organizar operações, técnicos, clientes, prédios, ordens de serviço e toda a documentação envolvida.',
-            ],
-            'gula' => [
-                'category' => 'Produto · Experiência digital para restaurantes',
-                'description' => 'Cardápio digital para restaurantes, pensado para o cliente consultar o menu e pedir direto do celular, com uma experiência moderna e sem a fricção do cardápio de papel.',
-                'problem' => 'O cardápio de um restaurante costuma ser estático e desconectado do resto da experiência digital do negócio.',
-                'solution' => 'Um cardápio digital multi-restaurante, com foco na experiência do cliente e uma arquitetura pensada para crescer.',
-                'exploration_note' => 'No futuro estou explorando realidade aumentada para mostrar os pratos antes de pedir — por enquanto é só uma ideia, ainda não uma funcionalidade construída.',
-            ],
+    'process' => [
+        'eyebrow' => 'Processo',
+        'heading' => 'Como eu trabalho',
+        'intro' => 'O mesmo processo que uso nos meus produtos eu aplico com clientes.',
+        'steps' => [
+            'understand' => ['title' => 'Entender o problema', 'description' => 'Antes de escrever código, entendo o que realmente acontece e para quem.'],
+            'design' => ['title' => 'Desenhar a solução', 'description' => 'Defino a arquitetura e as decisões-chave antes de construir.'],
+            'build' => ['title' => 'Construir uma primeira versão', 'description' => 'Uma versão que funciona, não uma maquete, o quanto antes.'],
+            'test' => ['title' => 'Testar com usuários', 'description' => 'Pessoas reais usam, e aí aparece o que precisa ser corrigido.'],
+            'iterate' => ['title' => 'Iterar', 'description' => 'Ajusto com base no que acontece no uso diário.'],
+            'ship' => ['title' => 'Colocar em produção', 'description' => 'O objetivo é funcionar no mundo real, não numa demo.'],
         ],
     ],
 
     'experience' => [
+        'eyebrow' => 'Trajetória',
         'heading' => 'Experiência',
         'periods' => [
             'present' => 'Atualmente',
@@ -109,72 +140,42 @@ return [
         'items' => [
             'products' => [
                 'title' => 'Desenvolvimento de produtos digitais',
-                'description' => 'Design e construção de SaaS e aplicações web para negócios reais, do início ao fim.',
+                'description' => 'Projeto e construção de SaaS e aplicações web para negócios reais, de ponta a ponta: Ascento, GULA e DOMUS, além de projetos freelance.',
             ],
             'elevators' => [
-                'title' => 'Manutenção de elevadores',
+                'title' => 'Técnico de elevadores',
                 'description' => 'Antes de construir software para empresas de manutenção, trabalhei dentro desse mundo. Conheço de perto como os técnicos trabalham, como as manutenções são organizadas e onde aparecem os problemas do dia a dia.',
             ],
         ],
     ],
 
-    'process' => [
-        'heading' => 'Como eu trabalho',
-        'intro' => 'Uso o mesmo processo nos meus próprios produtos e com clientes.',
-        'steps' => [
-            'understand' => [
-                'title' => 'Entender o problema',
-                'description' => 'Antes de mexer no código, entendo o que está acontecendo de verdade e para quem.',
-            ],
-            'design' => [
-                'title' => 'Desenhar uma solução',
-                'description' => 'Defino a arquitetura e as decisões principais antes de construir.',
-            ],
-            'build' => [
-                'title' => 'Construir uma primeira versão',
-                'description' => 'Uma versão funcional, não uma maquete, o quanto antes.',
-            ],
-            'test' => [
-                'title' => 'Testar com usuários',
-                'description' => 'Pessoas reais usam, e é aí que aparece o que precisa ser ajustado.',
-            ],
-            'iterate' => [
-                'title' => 'Iterar',
-                'description' => 'Ajusto com base no que realmente acontece no uso diário.',
-            ],
-            'ship' => [
-                'title' => 'Colocar em produção',
-                'description' => 'O objetivo é sempre o produto funcionar no mundo real, não numa demonstração.',
-            ],
-        ],
-    ],
-
     'contact' => [
+        'eyebrow' => 'Contato',
         'heading' => 'Vamos trabalhar juntos',
-        'intro' => 'Estou buscando oportunidades de trabalho e também aceitando projetos freelance. Me chama pelo canal que for mais fácil pra você.',
-        'cta' => 'Vamos trabalhar juntos',
+        'intro' => 'Estou aberto a oportunidades de trabalho e a projetos freelance. Fale comigo pelo canal que for mais confortável para você.',
+        'cta' => 'Falar pelo WhatsApp',
         'email' => 'E-mail',
         'whatsapp' => 'WhatsApp',
         'linkedin' => 'LinkedIn',
         'github' => 'GitHub',
+        'copy' => 'Copiar',
+        'copied' => 'Copiado',
     ],
 
     'footer' => [
-        'text' => 'Projetado e construído por Franco Acqua.',
-    ],
-
-    'cv' => [
-        'download' => 'Baixar currículo',
+        'text' => 'Projetado e desenvolvido por Franco Acqua.',
     ],
 
     'seo' => [
         'title' => 'Franco Acqua — Full-Stack Developer & Product Builder',
-        'description' => 'Desenvolvedor full-stack especializado em SaaS e aplicações web com Laravel. Construo produtos digitais que resolvem problemas reais de negócio.',
+        'description' => 'Desenvolvedor full-stack e criador de produtos SaaS com Laravel. Ascento, GULA e DOMUS: software que organiza negócios reais.',
+        'job_title' => 'Full-Stack Developer & Product Builder',
     ],
 
     'not_found' => [
-        'heading' => 'Página não encontrada',
-        'text' => 'Essa página não existe ou foi movida.',
+        'title' => 'Página não encontrada',
+        'heading' => 'Esta página não existe.',
+        'text' => 'O link pode estar errado ou a página pode ter sido movida.',
         'cta' => 'Voltar ao início',
     ],
 

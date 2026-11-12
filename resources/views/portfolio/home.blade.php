@@ -1,192 +1,305 @@
-<x-layout>
+@use('App\Portfolio\Localization')
+@use('App\Portfolio\ProjectStatus')
 
-    {{-- HERO ---------------------------------------------------------- --}}
-    <section class="max-w-5xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 grid md:grid-cols-5 gap-10 items-center">
-        <div class="md:col-span-3">
-            <p class="hero-reveal text-sm text-slate mb-4">{{ __('portfolio.hero.location') }}</p>
+@php
+    $links = config('portfolio.links');
+    $cv = Localization::cvPath();
+    $liveCount = $projects->filter(fn ($project) => $project->status === ProjectStatus::Production)->count();
+    $featured = $projects->where('featured', true)->values();
+    $others = $projects->where('featured', false)->values();
 
-            <h1 class="hero-reveal hero-reveal-delay-1 font-display text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-paper max-w-measure">
-                {{ __('portfolio.hero.headline') }}
-            </h1>
+    $jsonLd = [
+        '@context' => 'https://schema.org',
+        '@graph' => [
+            [
+                '@type' => 'Person',
+                '@id' => url('/').'#person',
+                'name' => config('portfolio.name'),
+                'jobTitle' => __('portfolio.seo.job_title'),
+                'url' => route('home'),
+                'email' => 'mailto:'.$links['email'],
+                'sameAs' => [$links['linkedin'], $links['github']],
+                'knowsAbout' => ['Laravel', 'PHP', 'SaaS', 'Filament', 'Tailwind CSS', 'MySQL'],
+            ],
+            [
+                '@type' => 'WebSite',
+                'name' => config('portfolio.seo.site_name'),
+                'url' => route('home'),
+                'inLanguage' => app()->getLocale(),
+                'author' => ['@id' => url('/').'#person'],
+            ],
+            [
+                '@type' => 'ItemList',
+                'name' => __('portfolio.projects.eyebrow'),
+                'itemListElement' => $projects->values()->map(fn ($project, $index) => [
+                    '@type' => 'ListItem',
+                    'position' => $index + 1,
+                    'url' => route('projects.show', ['slug' => $project->slug]),
+                    'name' => $project->name,
+                ])->all(),
+            ],
+        ],
+    ];
+@endphp
 
-            <p class="hero-reveal hero-reveal-delay-2 mt-6 text-slate text-lg leading-relaxed max-w-measure">
-                {{ __('portfolio.hero.subheadline') }}
-            </p>
+<x-layout :json-ld="$jsonLd">
 
-            <div class="hero-reveal hero-reveal-delay-3 mt-8 flex flex-wrap items-center gap-4">
-                <x-button href="#proyectos" variant="primary">{{ __('portfolio.hero.cta_projects') }}</x-button>
-                <x-button href="#contacto" variant="secondary">{{ __('portfolio.hero.cta_contact') }}</x-button>
-                <a href="{{ asset($profile['cv'][app()->getLocale()]) }}" class="text-sm text-slate hover:text-paper transition-colors" download>
-                    {{ __('portfolio.hero.cta_cv') }}
-                </a>
-            </div>
-        </div>
+    {{-- HERO ----------------------------------------------------------- --}}
+    <section class="relative isolate overflow-hidden border-b border-line/60" aria-labelledby="hero-title">
+        <div class="grid-backdrop absolute inset-0 -z-10" aria-hidden="true"></div>
+        <div class="absolute -top-40 left-1/2 -z-10 h-80 w-[48rem] -translate-x-1/2 rounded-full bg-amber/10 blur-3xl" aria-hidden="true"></div>
 
-        {{-- Corte transversal de un edificio: la metáfora del recorrido de
-             Franco (Técnico de ascensores → software) en una sola
-             ilustración, en vez de un ícono genérico. --}}
-        <div class="hidden md:flex md:col-span-2 justify-center" aria-hidden="true">
-            <svg viewBox="0 0 220 320" class="w-full max-w-[220px]" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="20.5" y="10.5" width="140" height="299" stroke="#2B313A" />
-                @for ($i = 1; $i < 7; $i++)
-                    <line x1="20.5" y1="{{ 10.5 + $i * 42.7 }}" x2="160.5" y2="{{ 10.5 + $i * 42.7 }}" stroke="#2B313A" />
-                @endfor
+        <div class="container-site grid grid-cols-1 gap-14 pb-20 pt-14 md:pt-24 lg:grid-cols-12 lg:items-center lg:gap-12 lg:pb-28">
+            <div class="lg:col-span-7">
+                <p class="reveal inline-flex items-center gap-2.5 rounded-full border border-line bg-surface/70 px-3 py-1.5 text-xs text-muted">
+                    <span class="status-dot-live" aria-hidden="true"></span>
+                    {{ __('portfolio.hero.availability') }}
+                </p>
 
-                {{-- shaft --}}
-                <rect x="76.5" y="10.5" width="28" height="299" stroke="#2B313A" />
+                <h1 id="hero-title" class="reveal reveal-1 mt-6 text-[2.5rem] font-semibold leading-[1.05] tracking-tightest text-fg sm:text-5xl lg:text-[4rem]">
+                    {{ __('portfolio.hero.headline') }}
+                </h1>
 
-                {{-- car, parked at the top floor: where he is now --}}
-                <rect x="80.5" y="18" width="20" height="27" fill="#FF6A1A" />
+                <p class="reveal reveal-2 mt-6 max-w-xl text-lg leading-relaxed text-muted">
+                    {{ __('portfolio.hero.subheadline') }}
+                </p>
 
-                {{-- measurement ticks --}}
-                @for ($i = 0; $i < 8; $i++)
-                    <line x1="12" y1="{{ 10.5 + $i * 42.7 }}" x2="20.5" y2="{{ 10.5 + $i * 42.7 }}" stroke="#9AA1AC" stroke-width="0.75" />
-                @endfor
+                <div class="reveal reveal-3 mt-9 flex flex-wrap items-center gap-3">
+                    <a href="#projects" class="btn-primary">
+                        {{ __('portfolio.hero.cta_projects') }}
+                        <x-icon name="arrow-down" />
+                    </a>
+                    <a href="#contact" class="btn-secondary">{{ __('portfolio.hero.cta_contact') }}</a>
+                    @if ($cv)
+                        <a href="{{ asset($cv) }}" class="btn-ghost" download>
+                            <x-icon name="download" />
+                            {{ __('portfolio.hero.cta_cv') }}
+                        </a>
+                    @endif
+                </div>
 
-                <line x1="160.5" y1="10.5" x2="185" y2="10.5" stroke="#9AA1AC" stroke-width="0.75" stroke-dasharray="2 2" />
-                <line x1="185" y1="10.5" x2="185" y2="309.5" stroke="#9AA1AC" stroke-width="0.75" />
-                <line x1="160.5" y1="309.5" x2="185" y2="309.5" stroke="#9AA1AC" stroke-width="0.75" stroke-dasharray="2 2" />
-            </svg>
-        </div>
-    </section>
-
-    {{-- SOBRE MÍ -------------------------------------------------------- --}}
-    <section id="sobre-mi" class="max-w-5xl mx-auto px-6 py-16 md:py-20">
-        <div class="spec-line">
-            <x-section-heading :title="__('portfolio.about.heading')" />
-            <div class="space-y-5 max-w-measure text-paper/90 leading-relaxed">
-                @foreach (__('portfolio.about.paragraphs') as $paragraph)
-                    <p>{{ $paragraph }}</p>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    {{-- QUÉ HAGO ---------------------------------------------------------- --}}
-    <section id="que-hago" class="max-w-5xl mx-auto px-6 py-16 md:py-20">
-        <div class="spec-line">
-            <x-section-heading :title="__('portfolio.work.heading')" />
-
-            <div class="grid sm:grid-cols-2 gap-x-10 gap-y-10">
-                @foreach (__('portfolio.work.items') as $item)
-                    <div>
-                        <h3 class="font-display text-lg font-semibold text-paper mb-2">{{ $item['title'] }}</h3>
-                        <p class="text-slate leading-relaxed">{{ $item['description'] }}</p>
+                <dl class="reveal reveal-4 mt-12 grid max-w-xl grid-cols-3 gap-6 border-t border-line pt-6">
+                    <div class="flex flex-col-reverse">
+                        <dt class="mt-1 text-xs leading-snug text-subtle">{{ __('portfolio.hero.facts.products') }}</dt>
+                        <dd class="text-2xl font-semibold tracking-tight text-fg">{{ $projects->count() }}</dd>
                     </div>
-                @endforeach
+                    <div class="flex flex-col-reverse">
+                        <dt class="mt-1 text-xs leading-snug text-subtle">{{ __('portfolio.hero.facts.live') }}</dt>
+                        <dd class="text-2xl font-semibold tracking-tight text-fg">{{ $liveCount }}</dd>
+                    </div>
+                    <div class="flex flex-col-reverse">
+                        <dt class="mt-1 text-xs leading-snug text-subtle">{{ __('portfolio.hero.facts.ownership') }}</dt>
+                        <dd class="font-mono text-2xl font-medium tracking-tight text-fg">0→1</dd>
+                    </div>
+                </dl>
             </div>
 
-            <div class="mt-14">
-                <p class="text-sm text-slate mb-4">{{ __('portfolio.skills.heading') }}</p>
-                <div class="space-y-6">
-                    @foreach ($skillGroups as $group)
-                        <div class="grid sm:grid-cols-4 gap-3 sm:gap-6">
-                            <p class="text-sm text-paper/80 sm:col-span-1">{{ $group['label'] }}</p>
-                            <ul class="flex flex-wrap gap-2 sm:col-span-3">
-                                @foreach ($group['items'] as $skill)
-                                    <x-skill-badge :label="$skill" />
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endforeach
+            {{-- Product index: every project at a glance. --}}
+            <div class="reveal reveal-2 lg:col-span-5">
+                <div class="card overflow-hidden bg-surface/80 shadow-2xl shadow-black/30 backdrop-blur">
+                    <div class="flex items-center justify-between border-b border-line px-5 py-3.5">
+                        <p class="font-mono text-xs uppercase tracking-wider text-subtle">{{ __('portfolio.hero.index_label') }}</p>
+                        <p class="font-mono text-xs text-subtle">{{ sprintf('%02d', $projects->count()) }}</p>
+                    </div>
+                    <ul class="divide-y divide-line">
+                        @foreach ($projects as $project)
+                            <li style="--accent: {{ $project->accent }}">
+                                <a href="{{ route('projects.show', ['slug' => $project->slug]) }}" class="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-raised/70">
+                                    <x-project-logo :project="$project" :size="40" />
+                                    <span class="min-w-0 flex-1">
+                                        <span class="flex items-center gap-2 font-medium text-fg">
+                                            {{ $project->name }}
+                                            <span class="accent-dot h-1.5 w-1.5 rounded-full" aria-hidden="true"></span>
+                                        </span>
+                                        <span class="block truncate text-sm text-subtle">{{ $project->category }}</span>
+                                    </span>
+                                    <span class="hidden font-mono text-[11px] uppercase tracking-wider text-subtle sm:block">{{ $project->status->label() }}</span>
+                                    <x-icon name="arrow-right" class="text-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-fg" />
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- PROYECTOS ---------------------------------------------------------- --}}
-    <section id="proyectos" class="max-w-5xl mx-auto px-6 py-16 md:py-20">
-        <div class="spec-line">
-            <x-section-heading
-                :title="__('portfolio.projects.heading')"
-                :lead="__('portfolio.projects.intro')"
-            />
+    {{-- PRODUCTS ------------------------------------------------------- --}}
+    <section id="projects" class="py-20 md:py-28" aria-labelledby="projects-title" x-data="projectFilter">
+        <div class="container-site">
+            <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <x-section-heading
+                    id="projects-title"
+                    :eyebrow="__('portfolio.projects.eyebrow')"
+                    :title="__('portfolio.projects.heading')"
+                    :lead="__('portfolio.projects.intro')"
+                    class="md:mb-14"
+                />
 
-            <div>
-                @foreach ($projects as $project)
-                    <x-project-card :project="$project" />
+                @if (count($statusFilters) > 1)
+                    <div class="mb-10 flex flex-wrap gap-2 md:mb-14" role="group" aria-label="{{ __('portfolio.projects.filter_label') }}" x-cloak>
+                        <button type="button" @click="status = 'all'" :aria-pressed="(status === 'all').toString()" :class="status === 'all' ? 'border-fg/40 bg-raised text-fg' : 'text-subtle hover:text-fg'" class="chip px-3.5 py-1.5 transition-colors">
+                            {{ __('portfolio.projects.filter_all') }} <span class="ml-1.5 font-mono text-subtle">{{ $projects->count() }}</span>
+                        </button>
+                        @foreach ($statusFilters as $filter)
+                            <button type="button" @click="status = @js($filter['value'])" :aria-pressed="(status === @js($filter['value'])).toString()" :class="status === @js($filter['value']) ? 'border-fg/40 bg-raised text-fg' : 'text-subtle hover:text-fg'" class="chip px-3.5 py-1.5 transition-colors">
+                                {{ $filter['label'] }} <span class="ml-1.5 font-mono text-subtle">{{ $filter['count'] }}</span>
+                            </button>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+            <div class="space-y-8 md:space-y-10">
+                @foreach ($featured as $project)
+                    <div x-show="matches(@js($project->status->value))" x-transition.opacity.duration.200ms>
+                        <x-project-showcase :project="$project" :reverse="$loop->odd === false" />
+                    </div>
+                @endforeach
+            </div>
+
+            @if ($others->isNotEmpty())
+                <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 md:mt-10">
+                    @foreach ($others as $project)
+                        <li x-show="matches(@js($project->status->value))" class="flex">
+                            <x-project-card :project="$project" class="w-full" />
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+    </section>
+
+    {{-- ABOUT + CAPABILITIES + STACK ------------------------------------ --}}
+    <section id="about" class="border-y border-line/60 bg-surface/40 py-20 md:py-28" aria-labelledby="about-title">
+        <div class="container-site">
+            <div class="grid grid-cols-1 gap-14 lg:grid-cols-12">
+                <div class="lg:col-span-5">
+                    <x-section-heading id="about-title" :eyebrow="__('portfolio.about.eyebrow')" :title="__('portfolio.about.heading')" class="mb-8 md:mb-8" />
+                    <div class="space-y-5 leading-relaxed text-muted">
+                        @foreach (__('portfolio.about.paragraphs') as $paragraph)
+                            <p>{{ $paragraph }}</p>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7">
+                    <h3 class="mb-5 font-mono text-xs uppercase tracking-wider text-subtle">{{ __('portfolio.capabilities.heading') }}</h3>
+                    @php
+                        $capabilityIcons = ['product' => 'box', 'saas' => 'layers', 'automation' => 'zap', 'interfaces' => 'layout', 'business' => 'wrench'];
+                    @endphp
+                    <ul class="grid gap-4 sm:grid-cols-2">
+                        @foreach (config('portfolio.capabilities') as $key)
+                            <li @class(['card p-5', 'sm:col-span-2' => $loop->last && $loop->count % 2 === 1])>
+                                <span class="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-line bg-raised text-amber">
+                                    <x-icon :name="$capabilityIcons[$key] ?? 'box'" :size="18" />
+                                </span>
+                                <h4 class="font-medium text-fg">{{ __("portfolio.capabilities.items.{$key}.title") }}</h4>
+                                <p class="mt-1.5 text-sm leading-relaxed text-muted">{{ __("portfolio.capabilities.items.{$key}.description") }}</p>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mt-14 divide-y divide-line">
+                <h3 class="px-5 py-4 font-mono text-xs uppercase tracking-wider text-subtle sm:px-6">{{ __('portfolio.skills.heading') }}</h3>
+                @foreach ($skillGroups as $group)
+                    <div class="grid gap-3 px-5 py-4 sm:grid-cols-4 sm:items-center sm:gap-6 sm:px-6">
+                        <p class="text-sm font-medium text-fg">{{ $group['label'] }}</p>
+                        <ul class="flex flex-wrap gap-1.5 sm:col-span-3">
+                            @foreach ($group['items'] as $skill)
+                                <li class="chip">{{ $skill }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @endforeach
             </div>
         </div>
     </section>
 
-    {{-- EXPERIENCIA ---------------------------------------------------------- --}}
-    <section id="experiencia" class="max-w-5xl mx-auto px-6 py-16 md:py-20">
-        <div class="spec-line">
-            <x-section-heading :title="__('portfolio.experience.heading')" />
+    {{-- PROCESS -------------------------------------------------------- --}}
+    <section id="process" class="py-20 md:py-28" aria-labelledby="process-title">
+        <div class="container-site">
+            <x-section-heading id="process-title" :eyebrow="__('portfolio.process.eyebrow')" :title="__('portfolio.process.heading')" :lead="__('portfolio.process.intro')" />
 
-            <div class="max-w-measure">
-                @foreach ($experience as $item)
-                    <x-timeline-item
-                        :period="$item['period']"
-                        :title="$item['title']"
-                        :description="$item['description']"
-                    />
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    {{-- CÓMO TRABAJO ---------------------------------------------------------- --}}
-    <section id="como-trabajo" class="max-w-5xl mx-auto px-6 py-16 md:py-20">
-        <div class="spec-line">
-            <x-section-heading
-                :title="__('portfolio.process.heading')"
-                :lead="__('portfolio.process.intro')"
-            />
-
-            <ol class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+            <ol class="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
                 @foreach (config('portfolio.process_steps') as $i => $key)
-                    <li>
-                        <span class="font-display text-sm text-amber">{{ sprintf('%02d', $i + 1) }}</span>
-                        <h3 class="font-display text-base font-semibold text-paper mt-2 mb-2">
-                            {{ __('portfolio.process.steps.'.$key.'.title') }}
-                        </h3>
-                        <p class="text-slate leading-relaxed text-sm">
-                            {{ __('portfolio.process.steps.'.$key.'.description') }}
-                        </p>
+                    <li class="bg-ink p-6 md:p-7">
+                        <span class="font-mono text-sm text-amber">{{ sprintf('%02d', $i + 1) }}</span>
+                        <h3 class="mt-3 font-medium text-fg">{{ __("portfolio.process.steps.{$key}.title") }}</h3>
+                        <p class="mt-1.5 text-sm leading-relaxed text-muted">{{ __("portfolio.process.steps.{$key}.description") }}</p>
                     </li>
                 @endforeach
             </ol>
         </div>
     </section>
 
-    {{-- CONTACTO ---------------------------------------------------------- --}}
-    <section id="contacto" class="max-w-5xl mx-auto px-6 py-16 md:py-24">
-        <div class="spec-line">
-            <x-section-heading
-                :title="__('portfolio.contact.heading')"
-                :lead="__('portfolio.contact.intro')"
-            />
-
-            <div class="flex flex-wrap items-center gap-4 mb-10">
-                <x-button href="{{ $profile['links']['whatsapp'] }}" variant="primary" external>
-                    {{ __('portfolio.contact.cta') }}
-                </x-button>
+    {{-- EXPERIENCE ----------------------------------------------------- --}}
+    <section id="experience" class="border-t border-line/60 py-20 md:py-28" aria-labelledby="experience-title">
+        <div class="container-site grid grid-cols-1 gap-10 lg:grid-cols-12">
+            <div class="lg:col-span-5">
+                <x-section-heading id="experience-title" :eyebrow="__('portfolio.experience.eyebrow')" :title="__('portfolio.experience.heading')" />
             </div>
+            <ol class="lg:col-span-7">
+                @foreach ($experience as $item)
+                    <x-timeline-item :period="$item['period']" :title="$item['title']" :description="$item['description']" />
+                @endforeach
+            </ol>
+        </div>
+    </section>
 
-            <ul class="flex flex-wrap gap-x-10 gap-y-4 text-sm">
-                <li>
-                    <a href="mailto:{{ $profile['links']['email'] }}" class="text-slate hover:text-paper transition-colors">
-                        {{ __('portfolio.contact.email') }} — {{ $profile['links']['email'] }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ $profile['links']['whatsapp'] }}" target="_blank" rel="noopener noreferrer" class="text-slate hover:text-paper transition-colors">
-                        {{ __('portfolio.contact.whatsapp') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ $profile['links']['linkedin'] }}" target="_blank" rel="noopener noreferrer" class="text-slate hover:text-paper transition-colors">
-                        {{ __('portfolio.contact.linkedin') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ $profile['links']['github'] }}" target="_blank" rel="noopener noreferrer" class="text-slate hover:text-paper transition-colors">
-                        {{ __('portfolio.contact.github') }}
-                    </a>
-                </li>
-            </ul>
+    {{-- CONTACT -------------------------------------------------------- --}}
+    <section id="contact" class="pb-20 md:pb-28" aria-labelledby="contact-title">
+        <div class="container-site">
+            <div class="card relative isolate overflow-hidden px-6 py-12 sm:px-10 md:px-14 md:py-16">
+                <div class="absolute -right-24 -top-24 -z-10 h-72 w-72 rounded-full bg-amber/15 blur-3xl" aria-hidden="true"></div>
+                <div class="grid-backdrop absolute inset-0 -z-10 opacity-60" aria-hidden="true"></div>
+
+                <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-end">
+                    <div class="lg:col-span-7">
+                        <p class="eyebrow mb-4">{{ __('portfolio.contact.eyebrow') }}</p>
+                        <h2 id="contact-title" class="text-3xl font-semibold tracking-tight text-fg md:text-5xl">{{ __('portfolio.contact.heading') }}</h2>
+                        <p class="mt-4 max-w-xl text-lg leading-relaxed text-muted">{{ __('portfolio.contact.intro') }}</p>
+
+                        <div class="mt-8 flex flex-wrap gap-3">
+                            <a href="{{ $links['whatsapp'] }}" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                                <x-icon name="chat" />
+                                {{ __('portfolio.contact.cta') }}
+                                <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
+                            </a>
+                            @if ($cv)
+                                <a href="{{ asset($cv) }}" class="btn-secondary" download>
+                                    <x-icon name="download" />
+                                    {{ __('portfolio.hero.cta_cv') }}
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+
+                    <ul class="space-y-2 lg:col-span-5">
+                        <li x-data="copyText(@js($links['email']))" class="flex items-center gap-2 rounded-xl border border-line bg-ink/60 p-1.5 pl-4">
+                            <x-icon name="mail" class="text-subtle" />
+                            <a href="mailto:{{ $links['email'] }}" class="min-w-0 flex-1 truncate py-2 text-sm text-fg hover:underline">{{ $links['email'] }}</a>
+                            <button type="button" @click="copy()" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs text-muted transition-colors hover:bg-raised hover:text-fg">
+                                <span x-show="!copied" class="inline-flex items-center gap-1.5"><x-icon name="copy" :size="14" /> {{ __('portfolio.contact.copy') }}</span>
+                                <span x-show="copied" x-cloak class="inline-flex items-center gap-1.5 text-live"><x-icon name="check" :size="14" /> {{ __('portfolio.contact.copied') }}</span>
+                            </button>
+                            <span class="sr-only" role="status" aria-live="polite" x-text="copied ? @js(__('portfolio.contact.copied')) : ''"></span>
+                        </li>
+                        @foreach (['linkedin' => 'linkedin', 'github' => 'github'] as $key => $icon)
+                            <li>
+                                <a href="{{ $links[$key] }}" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2 rounded-xl border border-line bg-ink/60 px-4 py-3.5 text-sm text-fg transition-colors hover:border-subtle/60">
+                                    <x-icon :name="$icon" class="text-subtle" />
+                                    <span class="flex-1">{{ __("portfolio.contact.{$key}") }}</span>
+                                    <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
+                                    <x-icon name="arrow-up-right" class="text-subtle transition-colors group-hover:text-fg" />
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
         </div>
     </section>
 

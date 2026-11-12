@@ -2,18 +2,18 @@
 
 namespace Tests\Unit;
 
-use App\Portfolio\Project;
+use App\Portfolio\LocalizedProject;
 use App\Portfolio\ProjectStatus;
 use PHPUnit\Framework\TestCase;
 
 class ProjectTest extends TestCase
 {
-    private function project(?string $url): Project
+    private function project(?string $url): LocalizedProject
     {
-        return new Project(
+        return new LocalizedProject(
             slug: 'demo', name: 'demo', order: 1, featured: true, status: ProjectStatus::Production,
-            year: 2026, url: $url, repository: null, links: [], accent: '#000000', logo: null, cover: null,
-            coverSmall: null, stack: ['PHP'], category: 'c', tagline: 't', summary: 's', problem: 'p',
+            year: 2026, url: $url, repository: null, links: [], accent: '#000000', logoUrl: null, coverUrl: null,
+            coverSmallUrl: null, stack: ['PHP'], category: 'c', tagline: 't', summary: 's', problem: 'p',
             solution: 'so', features: ['f'], audience: null, role: null,
         );
     }

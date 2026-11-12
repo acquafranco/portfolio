@@ -45,7 +45,8 @@
 <x-layout :json-ld="$jsonLd">
 
     {{-- HERO ----------------------------------------------------------- --}}
-    <section class="relative isolate overflow-hidden border-b border-line/60" aria-labelledby="hero-title">
+    <section class="relative isolate overflow-hidden border-b border-line/60" aria-labelledby="hero-title" data-spotlight>
+        <div class="hero-spotlight pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
         <div class="grid-backdrop absolute inset-0 -z-10" aria-hidden="true"></div>
         <div class="absolute -top-40 left-1/2 -z-10 h-80 w-[48rem] -translate-x-1/2 rounded-full bg-amber/10 blur-3xl" aria-hidden="true"></div>
 
@@ -67,12 +68,12 @@
                 <div class="reveal reveal-3 mt-9 flex flex-wrap items-center gap-3">
                     <a href="#projects" class="btn-primary">
                         {{ __('portfolio.hero.cta_projects') }}
-                        <x-icon name="arrow-down" />
+                        <x-glyph name="arrow-down" />
                     </a>
                     <a href="#contact" class="btn-secondary">{{ __('portfolio.hero.cta_contact') }}</a>
                     @if ($cv)
                         <a href="{{ asset($cv) }}" class="btn-ghost" download>
-                            <x-icon name="download" />
+                            <x-glyph name="download" />
                             {{ __('portfolio.hero.cta_cv') }}
                         </a>
                     @endif
@@ -94,32 +95,9 @@
                 </dl>
             </div>
 
-            {{-- Product index: every project at a glance. --}}
+            {{-- Animated terminal: "deploys" every product, each line links to it. --}}
             <div class="reveal reveal-2 lg:col-span-5">
-                <div class="card overflow-hidden bg-surface/80 shadow-2xl shadow-black/30 backdrop-blur">
-                    <div class="flex items-center justify-between border-b border-line px-5 py-3.5">
-                        <p class="font-mono text-xs uppercase tracking-wider text-subtle">{{ __('portfolio.hero.index_label') }}</p>
-                        <p class="font-mono text-xs text-subtle">{{ sprintf('%02d', $projects->count()) }}</p>
-                    </div>
-                    <ul class="divide-y divide-line">
-                        @foreach ($projects as $project)
-                            <li style="--accent: {{ $project->accent }}">
-                                <a href="{{ route('projects.show', ['slug' => $project->slug]) }}" class="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-raised/70">
-                                    <x-project-logo :project="$project" :size="40" />
-                                    <span class="min-w-0 flex-1">
-                                        <span class="flex items-center gap-2 font-medium text-fg">
-                                            {{ $project->name }}
-                                            <span class="accent-dot h-1.5 w-1.5 rounded-full" aria-hidden="true"></span>
-                                        </span>
-                                        <span class="block truncate text-sm text-subtle">{{ $project->category }}</span>
-                                    </span>
-                                    <span class="hidden font-mono text-[11px] uppercase tracking-wider text-subtle sm:block">{{ $project->status->label() }}</span>
-                                    <x-icon name="arrow-right" class="text-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-fg" />
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
+                <x-hero-terminal :projects="$projects" />
             </div>
         </div>
     </section>
@@ -192,7 +170,7 @@
                         @foreach (config('portfolio.capabilities') as $key)
                             <li @class(['card p-5', 'sm:col-span-2' => $loop->last && $loop->count % 2 === 1])>
                                 <span class="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-line bg-raised text-amber">
-                                    <x-icon :name="$capabilityIcons[$key] ?? 'box'" :size="18" />
+                                    <x-glyph :name="$capabilityIcons[$key] ?? 'box'" :size="18" />
                                 </span>
                                 <h4 class="font-medium text-fg">{{ __("portfolio.capabilities.items.{$key}.title") }}</h4>
                                 <p class="mt-1.5 text-sm leading-relaxed text-muted">{{ __("portfolio.capabilities.items.{$key}.description") }}</p>
@@ -263,14 +241,14 @@
                         <p class="mt-4 max-w-xl text-lg leading-relaxed text-muted">{{ __('portfolio.contact.intro') }}</p>
 
                         <div class="mt-8 flex flex-wrap gap-3">
-                            <a href="{{ $links['whatsapp'] }}" target="_blank" rel="noopener noreferrer" class="btn-primary">
-                                <x-icon name="chat" />
+                            <a href="{{ Localization::whatsappUrl() }}" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                                <x-glyph name="chat" />
                                 {{ __('portfolio.contact.cta') }}
                                 <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
                             </a>
                             @if ($cv)
                                 <a href="{{ asset($cv) }}" class="btn-secondary" download>
-                                    <x-icon name="download" />
+                                    <x-glyph name="download" />
                                     {{ __('portfolio.hero.cta_cv') }}
                                 </a>
                             @endif
@@ -279,21 +257,21 @@
 
                     <ul class="space-y-2 lg:col-span-5">
                         <li x-data="copyText(@js($links['email']))" class="flex items-center gap-2 rounded-xl border border-line bg-ink/60 p-1.5 pl-4">
-                            <x-icon name="mail" class="text-subtle" />
+                            <x-glyph name="mail" class="text-subtle" />
                             <a href="mailto:{{ $links['email'] }}" class="min-w-0 flex-1 truncate py-2 text-sm text-fg hover:underline">{{ $links['email'] }}</a>
                             <button type="button" @click="copy()" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs text-muted transition-colors hover:bg-raised hover:text-fg">
-                                <span x-show="!copied" class="inline-flex items-center gap-1.5"><x-icon name="copy" :size="14" /> {{ __('portfolio.contact.copy') }}</span>
-                                <span x-show="copied" x-cloak class="inline-flex items-center gap-1.5 text-live"><x-icon name="check" :size="14" /> {{ __('portfolio.contact.copied') }}</span>
+                                <span x-show="!copied" class="inline-flex items-center gap-1.5"><x-glyph name="copy" :size="14" /> {{ __('portfolio.contact.copy') }}</span>
+                                <span x-show="copied" x-cloak class="inline-flex items-center gap-1.5 text-live"><x-glyph name="check" :size="14" /> {{ __('portfolio.contact.copied') }}</span>
                             </button>
                             <span class="sr-only" role="status" aria-live="polite" x-text="copied ? @js(__('portfolio.contact.copied')) : ''"></span>
                         </li>
                         @foreach (['linkedin' => 'linkedin', 'github' => 'github'] as $key => $icon)
                             <li>
                                 <a href="{{ $links[$key] }}" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2 rounded-xl border border-line bg-ink/60 px-4 py-3.5 text-sm text-fg transition-colors hover:border-subtle/60">
-                                    <x-icon :name="$icon" class="text-subtle" />
+                                    <x-glyph :name="$icon" class="text-subtle" />
                                     <span class="flex-1">{{ __("portfolio.contact.{$key}") }}</span>
                                     <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
-                                    <x-icon name="arrow-up-right" class="text-subtle transition-colors group-hover:text-fg" />
+                                    <x-glyph name="arrow-up-right" class="text-subtle transition-colors group-hover:text-fg" />
                                 </a>
                             </li>
                         @endforeach

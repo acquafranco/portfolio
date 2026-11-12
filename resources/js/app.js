@@ -1,4 +1,5 @@
 import Alpine from 'alpinejs';
+import { initSpotlight, initTerminals } from './terminal';
 
 /**
  * Mobile navigation: closes on Escape, on link click and when resizing to desktop.
@@ -46,6 +47,9 @@ Alpine.data('copyText', (text) => ({
 
 window.Alpine = Alpine;
 Alpine.start();
+
+initTerminals();
+initSpotlight();
 
 // Stop the loading shimmer once each image has loaded (or failed).
 document.querySelectorAll('img[data-media]').forEach((img) => {

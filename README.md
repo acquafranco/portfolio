@@ -13,27 +13,29 @@ Sitio personal de Franco Acqua, full-stack developer y creador de productos SaaS
 | Backend | PHP 8.3+ · Laravel 13 |
 | Vistas | Blade (componentes en `resources/views/components`) |
 | Estilos | Tailwind CSS 3 (tokens en `resources/css/app.css` y `tailwind.config.js`) |
-| JS | Alpine.js (menú móvil, filtro por estado, copiar email) |
+| Admin | Filament 5 (Livewire 4) en `/admin` |
+| JS | Alpine.js (menú, filtro, copiar email) + `resources/js/terminal.js` (terminal animada del hero) |
 | Build | Vite 8 |
 | Tests | PHPUnit 12 |
 
-El sitio **no usa base de datos, sesiones ni cookies**: todo el contenido vive en archivos de configuración y de idioma. Cada página es pública, cacheable y no depende de MySQL.
+Los proyectos viven en la base de datos y se administran desde `/admin`. El sitio público **no usa sesiones ni cookies**: cada página es cacheable y, si la base no responde, muestra los proyectos de respaldo.
 
 ## Organización
 
 ```
-config/
-  portfolio.php            Perfil: nombre, links, CV, stack, experiencia, SEO
-  projects/                Un archivo por proyecto (el nombre del archivo es el slug)
-    ascento.php
-    gula.php
-    domus.php
+config/portfolio.php       Perfil: nombre, links, CV, stack, experiencia, SEO
+database/
+  migrations/              users (+ is_admin), projects (importa los iniciales)
+  seeders/projects/*.php   Datos iniciales y respaldo de Ascento, GULA, DOMUS
 lang/{es,pt,en}/portfolio.php   Textos de la interfaz
 app/
+  Models/Project.php       Proyecto (Eloquent): imágenes, publicación, orden
+  Filament/Resources/Projects/   Panel: formulario y tabla de proyectos
   Portfolio/
-    Project.php            Value object de un proyecto ya resuelto para un idioma
+    LocalizedProject.php   Proyecto ya resuelto para un idioma (lo usan las vistas)
+    ProjectImageOptimizer.php  Convierte capturas y logos a WebP
     ProjectStatus.php      Enum: production | development | experimental
-    ProjectRepository.php  Lee, valida, ordena y traduce los proyectos
+    ProjectRepository.php  Lee (base o respaldo), valida, ordena y traduce
     Localization.php       URLs por idioma, hreflang, CV por idioma
   Http/
     Controllers/PortfolioController.php   Home, caso de estudio, redirección por idioma
@@ -41,7 +43,7 @@ app/
     Middleware/SetLocale.php              Idioma desde /es, /pt, /en
     Middleware/SecurityHeaders.php        Cabeceras de seguridad
   Console/Commands/
-    MakePortfolioProject.php   php artisan portfolio:make-project
+    CreatePortfolioAdmin.php   php artisan portfolio:admin
     ListPortfolioProjects.php  php artisan portfolio:projects
 resources/views/
   portfolio/home.blade.php, portfolio/project.blade.php
@@ -50,51 +52,38 @@ resources/views/
 public/images/projects/{slug}/  Capturas y logos de cada proyecto (WebP)
 ```
 
-## Agregar un proyecto
+## Panel de administración (`/admin`)
 
-Un proyecto = **un archivo**. No hay que tocar vistas, rutas, traducciones ni el sitemap.
+Los proyectos se cargan desde **`/admin`** (Filament 5), con usuario administrador. Desde ahí se puede:
 
-```bash
-php artisan portfolio:make-project mi-producto --name="Mi Producto" --status=development --url=https://mi-producto.com --featured
-```
+- Crear, editar, despublicar y borrar proyectos.
+- Subir la **captura** (se recorta a 1200×630 desde arriba y se convierte a WebP 1200 + 720 px) y el **logo** (160×160 WebP; los SVG se guardan tal cual). Al reemplazar o borrar, los archivos viejos se eliminan.
+- Escribir la descripción en español (obligatorio), portugués e inglés (opcionales: lo vacío se muestra en español): categoría, frase, resumen, problema, solución, funcionalidades, para quién es y rol.
+- Definir estado (producción / desarrollo / experimental), destacado, año, color de identidad, tecnologías, sitio, repositorio y enlaces extra.
+- Ordenar arrastrando las filas.
 
-Esto crea `config/projects/mi-producto.php` con todos los campos y la carpeta `public/images/projects/mi-producto/`. Completá los textos y validá:
+Los cambios se ven en el sitio al instante (no hace falta deployar).
 
-```bash
-php artisan portfolio:projects   # lista los proyectos y valida todos los archivos (exit 1 si hay errores)
-```
-
-### Campos
-
-| Campo | Descripción |
-| --- | --- |
-| `name` | Nombre público. |
-| `order` | Orden de aparición (menor primero). |
-| `featured` | `true`: tarjeta grande destacada. `false`: tarjeta compacta en la grilla. |
-| `status` | `production`, `development` o `experimental` (badge y filtro de la home). |
-| `year` | Año de inicio (opcional). |
-| `url` | Dominio en producción (opcional). |
-| `repository` | Repositorio público de GitHub (opcional). |
-| `links` | Enlaces extra: `[['label' => ['es' => '…', 'en' => '…'], 'url' => 'https://…']]`. |
-| `accent` | Color de identidad del proyecto (`#RRGGBB`): brillo, bordes y detalles. |
-| `logo` | Ícono cuadrado (ruta dentro de `public/`), opcional. |
-| `cover` / `cover_small` | Captura 1200×630 y 720×378 en WebP. Sin captura se muestra la inicial sobre el color del proyecto. |
-| `stack` | Tecnologías. |
-| `content.{es,pt,en}` | `category`, `tagline`, `summary`, `problem`, `solution`, `features` (lista), `audience`, `role`. Solo el idioma por defecto (`es`) es obligatorio: lo que falte en otro idioma se muestra en español. |
-
-Un archivo inválido nunca rompe el sitio: el proyecto se omite y se registra un warning en el log. `portfolio:projects` y los tests lo reportan como error.
-
-### Capturas
+### Crear el administrador
 
 ```bash
-cwebp -q 80 -resize 1200 630 captura.png -o public/images/projects/mi-producto/cover.webp
-cwebp -q 78 -resize 720 378  captura.png -o public/images/projects/mi-producto/cover-720.webp
+php artisan portfolio:admin tu@email.com                       # pide la contraseña sin mostrarla
+php artisan portfolio:admin tu@email.com --password='...'      # no interactivo (Forge → Commands)
 ```
+
+Si el email ya existe, actualiza la contraseña. No hay registro público: solo entran usuarios con `is_admin`.
+
+### Datos iniciales
+
+La migración `create_projects_table` importa Ascento, GULA y DOMUS desde `database/seeders/projects/*.php` y copia sus imágenes al disco `public`. Nunca pisa proyectos existentes. Si la base no está disponible, el sitio público usa esos mismos archivos como respaldo, así nunca se cae.
+
+`php artisan portfolio:projects` lista los proyectos publicados y verifica que estén completos y que sus imágenes existan.
 
 ## Otros contenidos
 
 - **Textos de la interfaz:** `lang/{es,pt,en}/portfolio.php`.
-- **Links, CV, stack, experiencia:** `config/portfolio.php`. El CV de cada idioma va en `public/cv/`; si un idioma no tiene CV se ofrece el del idioma por defecto.
+- **Links, CV, stack, experiencia:** `config/portfolio.php`.
+- **WhatsApp:** el botón abre el chat con un mensaje ya escrito según el idioma (`contact.whatsapp_message` en `lang/*/portfolio.php`). El CV de cada idioma va en `public/cv/`; si un idioma no tiene CV se ofrece el del idioma por defecto.
 - **Imagen para compartir (Open Graph):** `public/images/og-cover.png` (1200×630). Cada caso de estudio usa la captura de su proyecto.
 
 ## Ejecutar localmente
@@ -103,6 +92,10 @@ cwebp -q 78 -resize 720 378  captura.png -o public/images/projects/mi-producto/c
 composer install
 cp .env.example .env
 php artisan key:generate
+touch database/database.sqlite   # o configurar MySQL en .env
+php artisan migrate
+php artisan storage:link
+php artisan portfolio:admin tu@email.com
 npm install
 npm run build        # o: npm run dev
 php artisan serve    # http://localhost:8000 → redirige a /es, /pt o /en según el navegador
@@ -116,20 +109,26 @@ php artisan test
 
 ## Configuración
 
-Variables de entorno relevantes:
-
 | Variable | Valor en producción |
 | --- | --- |
 | `APP_ENV` | `production` |
 | `APP_DEBUG` | `false` |
-| `APP_URL` | URL pública con `https://` (fuerza URLs https en canonical, Open Graph y sitemap) |
+| `APP_URL` | URL pública con `https://` |
 | `APP_KEY` | Generada con `php artisan key:generate` |
-
-No hace falta base de datos: el sitio no usa sesiones ni modelos. Las variables `DB_*`, `SESSION_*` y `CACHE_*` pueden quedar como estén.
+| `DB_CONNECTION`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | Base MySQL del sitio (Forge → Database) |
+| `SESSION_DRIVER` | `database` o `file` (solo lo usa `/admin`) |
 
 ## Deploy (Laravel Forge)
 
-`public/build` no se versiona, así que el servidor compila los assets. Script de deploy recomendado:
+Primera vez:
+
+1. Forge → servidor → **Database**: crear la base (p. ej. `portfolio`) y un usuario con permisos solo sobre ella.
+2. Forge → sitio → **Environment**: completar las variables `DB_*` con esos datos.
+3. Actualizar el **script de deploy** (abajo) y deployar.
+4. Forge → sitio → **Commands**: `php artisan portfolio:admin tu@email.com --password='...'`.
+5. Entrar a `https://<dominio>/admin`.
+
+Script de deploy:
 
 ```bash
 cd $FORGE_SITE_PATH
@@ -140,19 +139,21 @@ $FORGE_COMPOSER install --no-dev --no-interaction --prefer-dist --optimize-autol
 npm ci
 npm run build
 
-$FORGE_PHP artisan portfolio:projects   # aborta el deploy si un proyecto es inválido
-$FORGE_PHP artisan optimize             # config, rutas, vistas y eventos en caché
+$FORGE_PHP artisan migrate --force      # solo crea tablas nuevas; no borra datos
+$FORGE_PHP artisan storage:link || true # capturas subidas desde /admin
+$FORGE_PHP artisan optimize
+$FORGE_PHP artisan filament:optimize
 
 ( flock -w 10 9 || exit 1
     echo 'Restarting FPM...'; sudo -S service $FORGE_PHP_FPM reload ) 9>/tmp/fpmlock
 ```
 
-No hay migraciones que correr. Después de cambiar un archivo de `config/projects/` hay que volver a deployar (o correr `php artisan optimize`) porque la configuración queda en caché.
+Las capturas subidas viven en `storage/app/public/projects`: incluir `storage/` en los backups del servidor.
 
 Verificación después del deploy:
 
 ```bash
 curl -I https://<dominio>/es          # 200, sin Set-Cookie
 curl https://<dominio>/sitemap.xml    # todas las URLs con el dominio real
-curl https://<dominio>/up             # health check de Laravel
+curl -I https://<dominio>/admin       # 302 al login
 ```

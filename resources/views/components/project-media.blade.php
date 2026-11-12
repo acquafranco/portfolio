@@ -19,10 +19,10 @@
         </div>
 
         <div class="media-placeholder aspect-[40/21]">
-            @if ($project->cover)
+            @if ($project->coverUrl)
                 <img
-                    src="{{ asset($project->cover) }}"
-                    @if ($project->coverSmall) srcset="{{ asset($project->coverSmall) }} 720w, {{ asset($project->cover) }} 1200w" sizes="{{ $sizes }}" @endif
+                    src="{{ $project->coverUrl }}"
+                    @if ($project->coverSmallUrl) srcset="{{ $project->coverSmallUrl }} 720w, {{ $project->coverUrl }} 1200w" sizes="{{ $sizes }}" @endif
                     alt="{{ __('portfolio.projects.cover_alt', ['name' => $project->name]) }}"
                     width="1200"
                     height="630"

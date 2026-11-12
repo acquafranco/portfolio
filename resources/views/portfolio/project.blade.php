@@ -9,7 +9,7 @@
         'applicationCategory' => 'BusinessApplication',
         'operatingSystem' => 'Web',
         'url' => $project->url ?? route('projects.show', ['slug' => $project->slug]),
-        'image' => $project->cover ? asset($project->cover) : null,
+        'image' => $project->coverUrl ? $project->coverUrl : null,
         'inLanguage' => app()->getLocale(),
         'creator' => ['@type' => 'Person', 'name' => config('portfolio.name'), 'url' => route('home')],
     ];
@@ -24,7 +24,7 @@
 <x-layout
     :title="$project->name.' · '.$project->category"
     :description="$project->summary"
-    :image="$project->cover"
+    :image="$project->coverUrl"
     type="article"
     :json-ld="array_filter($jsonLd)"
 >
@@ -36,7 +36,7 @@
 
             <div class="container-site pb-16 pt-10 md:pb-20 md:pt-14">
                 <a href="{{ route('home') }}#projects" class="btn-ghost -ml-3 mb-10">
-                    <x-icon name="arrow-left" />
+                    <x-glyph name="arrow-left" />
                     {{ __('portfolio.project.back') }}
                 </a>
 
@@ -56,12 +56,12 @@
                                 <a href="{{ $project->url }}" target="_blank" rel="noopener" class="btn-primary">
                                     {{ __('portfolio.projects.visit') }}
                                     <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
-                                    <x-icon name="arrow-up-right" />
+                                    <x-glyph name="arrow-up-right" />
                                 </a>
                             @endif
                             @if ($project->repository)
                                 <a href="{{ $project->repository }}" target="_blank" rel="noopener noreferrer" class="btn-secondary">
-                                    <x-icon name="github" />
+                                    <x-glyph name="github" />
                                     {{ __('portfolio.projects.code') }}
                                     <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
                                 </a>
@@ -70,7 +70,7 @@
                                 <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer" class="btn-secondary">
                                     {{ $link['label'] }}
                                     <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
-                                    <x-icon name="arrow-up-right" />
+                                    <x-glyph name="arrow-up-right" />
                                 </a>
                             @endforeach
                         </div>
@@ -133,7 +133,7 @@
                     <ul class="mt-6 grid gap-3 sm:grid-cols-2">
                         @foreach ($project->features as $feature)
                             <li class="flex gap-3 rounded-xl border border-line bg-surface/60 p-4 text-sm leading-relaxed text-fg/90">
-                                <x-icon name="check" class="mt-0.5 accent-text" />
+                                <x-glyph name="check" class="mt-0.5 accent-text" />
                                 <span>{{ $feature }}</span>
                             </li>
                         @endforeach
@@ -170,7 +170,7 @@
                     <span class="mt-1 block text-lg font-semibold tracking-tight text-fg">{{ $next->name }}</span>
                     <span class="block truncate text-sm text-muted">{{ $next->tagline }}</span>
                 </span>
-                <x-icon name="arrow-right" :size="20" class="text-subtle transition-transform group-hover:translate-x-1 group-hover:text-fg" />
+                <x-glyph name="arrow-right" :size="20" class="text-subtle transition-transform group-hover:translate-x-1 group-hover:text-fg" />
             </a>
         @endif
 

@@ -7,15 +7,15 @@
         <div class="flex items-center gap-5">
             <a href="{{ $links['github'] }}" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-fg">
                 <span class="sr-only">GitHub {{ __('portfolio.projects.opens_new_tab') }}</span>
-                <x-icon name="github" :size="18" />
+                <x-glyph name="github" :size="18" />
             </a>
             <a href="{{ $links['linkedin'] }}" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-fg">
                 <span class="sr-only">LinkedIn {{ __('portfolio.projects.opens_new_tab') }}</span>
-                <x-icon name="linkedin" :size="18" />
+                <x-glyph name="linkedin" :size="18" />
             </a>
             <a href="mailto:{{ $links['email'] }}" class="transition-colors hover:text-fg">
                 <span class="sr-only">{{ __('portfolio.contact.email') }}</span>
-                <x-icon name="mail" :size="18" />
+                <x-glyph name="mail" :size="18" />
             </a>
             <x-language-switcher class="inline-flex" />
         </div>

@@ -36,8 +36,8 @@
                 aria-controls="mobile-menu"
             >
                 <span class="sr-only" x-text="open ? @js(__('portfolio.nav.close_menu')) : @js(__('portfolio.nav.open_menu'))">{{ __('portfolio.nav.open_menu') }}</span>
-                <x-icon name="menu" :size="22" x-show="!open" />
-                <x-icon name="close" :size="22" x-show="open" x-cloak />
+                <x-glyph name="menu" :size="22" x-show="!open" />
+                <x-glyph name="close" :size="22" x-show="open" x-cloak />
             </button>
         </div>
     </div>
@@ -55,7 +55,7 @@
                 <li>
                     <a href="{{ $home }}#{{ $id }}" @click="close()" class="flex items-center justify-between border-b border-line/60 py-3.5 text-fg">
                         {{ $label }}
-                        <x-icon name="arrow-right" class="text-subtle" />
+                        <x-glyph name="arrow-right" class="text-subtle" />
                     </a>
                 </li>
             @endforeach

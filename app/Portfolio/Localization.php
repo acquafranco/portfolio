@@ -68,6 +68,14 @@ class Localization
     }
 
     /**
+     * wa.me link with a ready-to-send greeting in the current language.
+     */
+    public static function whatsappUrl(): string
+    {
+        return config('portfolio.links.whatsapp').'?text='.rawurlencode(__('portfolio.contact.whatsapp_message'));
+    }
+
+    /**
      * Public path of the CV for the current language, falling back to the
      * default language, or null when no file exists.
      */

@@ -12,7 +12,7 @@
             <h1 class="mt-4 text-4xl font-semibold tracking-tightest text-fg md:text-6xl">{{ __('portfolio.not_found.heading') }}</h1>
             <p class="mt-4 max-w-md text-lg text-muted">{{ __('portfolio.not_found.text') }}</p>
             <a href="{{ route('home') }}" class="btn-primary mt-10">
-                <x-icon name="arrow-left" />
+                <x-glyph name="arrow-left" />
                 {{ __('portfolio.not_found.cta') }}
             </a>
         </div>

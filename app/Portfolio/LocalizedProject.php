@@ -3,9 +3,10 @@
 namespace App\Portfolio;
 
 /**
- * A portfolio project already resolved for one locale.
+ * A portfolio project already resolved for one locale, ready for the views.
+ * Image properties are absolute URLs.
  */
-final readonly class Project
+final readonly class LocalizedProject
 {
     /**
      * @param  list<array{label: string, url: string}>  $links
@@ -23,9 +24,9 @@ final readonly class Project
         public ?string $repository,
         public array $links,
         public string $accent,
-        public ?string $logo,
-        public ?string $cover,
-        public ?string $coverSmall,
+        public ?string $logoUrl,
+        public ?string $coverUrl,
+        public ?string $coverSmallUrl,
         public array $stack,
         public string $category,
         public string $tagline,

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Portfolio\Project;
+use App\Portfolio\LocalizedProject;
 use App\Portfolio\ProjectRepository;
 use App\Portfolio\ProjectStatus;
 use Illuminate\Http\RedirectResponse;
@@ -74,12 +74,12 @@ class PortfolioController extends Controller
      * Status filter chips for the projects grid: only statuses that actually
      * have projects, with their counts.
      *
-     * @param  list<Project>  $projects
+     * @param  list<LocalizedProject>  $projects
      * @return list<array{value: string, label: string, count: int}>
      */
     private function statusFilters(array $projects): array
     {
-        $counts = array_count_values(array_map(fn (Project $project): string => $project->status->value, $projects));
+        $counts = array_count_values(array_map(fn (LocalizedProject $project): string => $project->status->value, $projects));
 
         return array_values(array_map(
             fn (ProjectStatus $status): array => [

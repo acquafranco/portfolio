@@ -2,12 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Models\Project;
 use App\Portfolio\ProjectRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class PortfolioPagesTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * @return array<string, array{0: string}>
      */
@@ -127,7 +132,7 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('hreflang="en" href="'.url('/en/projects/ascento').'"', false)
             ->assertSee('hreflang="x-default" href="'.url('/es/projects/ascento').'"', false)
             ->assertSee('<meta property="og:locale" content="pt_BR">', false)
-            ->assertSee('<meta property="og:image" content="'.asset('images/projects/ascento/cover.webp').'">', false);
+            ->assertSee('<meta property="og:image" content="'.Project::mediaUrl(Project::query()->where('slug', 'ascento')->value('cover_path')).'">', false);
 
         $this->get('/es')->assertSee('<meta property="og:image" content="'.asset('images/og-cover.png').'">', false);
         $this->assertFileExists(public_path('images/og-cover.png'));
@@ -169,7 +174,7 @@ class PortfolioPagesTest extends TestCase
         $this->get('/es')
             ->assertSee('https://github.com/acquafranco')
             ->assertSee('mailto:'.config('portfolio.links.email'), false)
-            ->assertSee(config('portfolio.links.whatsapp'))
+            ->assertSee(config('portfolio.links.whatsapp').'?text='.rawurlencode(__('portfolio.contact.whatsapp_message', [], 'es')), false)
             ->assertDontSee('github.com/francoacqua');
     }
 
@@ -199,6 +204,42 @@ class PortfolioPagesTest extends TestCase
             ->assertOk()
             ->assertSee('Allow: /')
             ->assertSee('Sitemap: '.url('/sitemap.xml'));
+    }
+
+    #[DataProvider('locales')]
+    public function test_whatsapp_link_has_a_prefilled_message_per_locale(string $locale): void
+    {
+        $this->get("/{$locale}")
+            ->assertSee('wa.me/', false)
+            ->assertSee('?text='.rawurlencode(__('portfolio.contact.whatsapp_message', [], $locale)), false);
+    }
+
+    public function test_hero_terminal_lists_every_project_with_links(): void
+    {
+        $response = $this->get('/en')->assertOk()->assertSee('data-terminal', false)->assertSee('php artisan deploy --all');
+
+        foreach (app(ProjectRepository::class)->all('en') as $project) {
+            $response->assertSee('<span style="color: '.$project->accent.'">'.$project->slug.'/</span>', false);
+        }
+
+        $response->assertSee('3 products live.');
+    }
+
+    public function test_unpublished_projects_are_hidden_everywhere(): void
+    {
+        Project::query()->where('slug', 'gula')->update(['is_published' => false]);
+
+        $this->get('/es')->assertOk()->assertDontSee('gula.on-forge.com');
+        $this->get('/es/projects/gula')->assertNotFound();
+        $this->get('/sitemap.xml')->assertDontSee('/projects/gula');
+    }
+
+    public function test_public_site_survives_without_the_projects_table(): void
+    {
+        Schema::drop('projects');
+
+        $this->get('/es')->assertOk()->assertSee('Ascento')->assertSee('DOMUS');
+        $this->get('/es/projects/domus')->assertOk();
     }
 
     public function test_health_check_responds(): void

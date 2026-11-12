@@ -25,6 +25,6 @@
 
     <span class="mt-6 inline-flex items-center gap-1.5 text-sm text-fg" aria-hidden="true">
         {{ __('portfolio.projects.case_study') }}
-        <x-icon name="arrow-right" class="transition-transform group-hover:translate-x-0.5" />
+        <x-glyph name="arrow-right" class="transition-transform group-hover:translate-x-0.5" />
     </span>
 </article>

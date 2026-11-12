@@ -26,7 +26,7 @@
             <ul class="mt-6 grid gap-2.5 text-sm text-fg/90 sm:grid-cols-2">
                 @foreach (array_slice($project->features, 0, 4) as $feature)
                     <li class="flex gap-2.5">
-                        <x-icon name="check" class="mt-0.5 accent-text" />
+                        <x-glyph name="check" class="mt-0.5 accent-text" />
                         <span>{{ $feature }}</span>
                     </li>
                 @endforeach
@@ -42,13 +42,13 @@
                 <a href="{{ route('projects.show', ['slug' => $project->slug]) }}" class="btn-primary">
                     {{ __('portfolio.projects.case_study') }}
                     <span class="sr-only">: {{ $project->name }}</span>
-                    <x-icon name="arrow-right" />
+                    <x-glyph name="arrow-right" />
                 </a>
                 @if ($project->url)
                     <a href="{{ $project->url }}" target="_blank" rel="noopener" class="btn-secondary">
                         {{ $project->domain() }}
                         <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
-                        <x-icon name="arrow-up-right" />
+                        <x-glyph name="arrow-up-right" />
                     </a>
                 @endif
             </div>

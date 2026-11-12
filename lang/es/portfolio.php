@@ -29,6 +29,10 @@ return [
         'cta_projects' => 'Ver productos',
         'cta_contact' => 'Hablemos',
         'cta_cv' => 'Descargar CV',
+        'terminal' => [
+            'replay' => 'Repetir animación',
+            'done' => '{1} :count producto en línea. Listo para el próximo.|[2,*] :count productos en línea. Listo para el próximo.',
+        ],
         'index_label' => 'Productos',
         'facts' => [
             'products' => 'productos propios',
@@ -156,6 +160,7 @@ return [
         'cta' => 'Escribir por WhatsApp',
         'email' => 'Email',
         'whatsapp' => 'WhatsApp',
+        'whatsapp_message' => 'Hola Franco! Vi tu portfolio y me gustaría hablar sobre un proyecto.',
         'linkedin' => 'LinkedIn',
         'github' => 'GitHub',
         'copy' => 'Copiar',

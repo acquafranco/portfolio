@@ -2,28 +2,33 @@
 
 namespace App\Portfolio;
 
+use App\Models\Project;
+use Database\Seeders\ProjectSeeder;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use PDOException;
 
 /**
- * Reads portfolio projects from config/projects/*.php (one file per project,
- * the file name is the slug) and resolves them for a locale.
+ * Published projects for the public site, resolved for a locale.
  *
- * Projects that fail validation are skipped and logged at runtime so a typo
- * never takes the site down; `php artisan portfolio:projects` and the test
- * suite report them as errors.
+ * Source of truth: the `projects` table (managed from /admin). If the
+ * database is not reachable or not migrated yet, the seed files in
+ * database/seeders/projects/ are used so the public site never goes down.
+ * Invalid entries are skipped and logged.
  */
 class ProjectRepository
 {
-    /** @var array<string, Collection<int, Project>> */
+    /** @var array<string, array<string, mixed>>|null */
+    private ?array $definitions = null;
+
+    /** @var array<string, Collection<int, LocalizedProject>> */
     private array $resolved = [];
 
     /**
-     * All valid projects, ordered by `order` and then by name.
-     *
-     * @return Collection<int, Project>
+     * @return Collection<int, LocalizedProject>
      */
     public function all(?string $locale = null): Collection
     {
@@ -34,22 +39,22 @@ class ProjectRepository
                 $errors = $this->errorsFor($slug, $definition);
 
                 if ($errors !== []) {
-                    Log::warning("Portfolio project [{$slug}] skipped: invalid definition.", ['errors' => $errors]);
+                    Log::warning("Portfolio project [{$slug}] skipped: invalid data.", ['errors' => $errors]);
 
                     return false;
                 }
 
                 return true;
             })
-            ->map(fn (array $definition, string $slug): Project => $this->make($slug, $definition, $locale))
+            ->map(fn (array $definition, string $slug): LocalizedProject => $this->make($slug, $definition, $locale))
             ->sortBy([
-                fn (Project $a, Project $b): int => $a->order <=> $b->order,
-                fn (Project $a, Project $b): int => strcasecmp($a->name, $b->name),
+                fn (LocalizedProject $a, LocalizedProject $b): int => $a->order <=> $b->order,
+                fn (LocalizedProject $a, LocalizedProject $b): int => strcasecmp($a->name, $b->name),
             ])
             ->values();
     }
 
-    public function find(string $slug, ?string $locale = null): ?Project
+    public function find(string $slug, ?string $locale = null): ?LocalizedProject
     {
         return $this->all($locale)->firstWhere('slug', $slug);
     }
@@ -57,7 +62,7 @@ class ProjectRepository
     /**
      * The project shown after $project on its detail page (wraps around).
      */
-    public function next(Project $project, ?string $locale = null): ?Project
+    public function next(LocalizedProject $project, ?string $locale = null): ?LocalizedProject
     {
         $projects = $this->all($locale);
 
@@ -65,14 +70,13 @@ class ProjectRepository
             return null;
         }
 
-        $index = $projects->search(fn (Project $candidate): bool => $candidate->slug === $project->slug);
+        $index = $projects->search(fn (LocalizedProject $candidate): bool => $candidate->slug === $project->slug);
 
         return $projects->get(($index + 1) % $projects->count());
     }
 
     /**
-     * Validation errors for every project file, keyed by slug. Includes checks
-     * that need the filesystem (images must exist in public/).
+     * Validation errors keyed by slug, including missing image files.
      *
      * @return array<string, list<string>>
      */
@@ -86,8 +90,8 @@ class ProjectRepository
             foreach (['logo', 'cover', 'cover_small'] as $imageKey) {
                 $path = $definition[$imageKey] ?? null;
 
-                if (is_string($path) && ! is_file(public_path($path))) {
-                    $projectErrors[] = "The {$imageKey} file [public/{$path}] does not exist.";
+                if (! Project::mediaExists($path)) {
+                    $projectErrors[] = "The {$imageKey} file [{$path}] does not exist.";
                 }
             }
 
@@ -100,13 +104,28 @@ class ProjectRepository
     }
 
     /**
+     * Raw project data keyed by slug (same shape as the seed files).
+     *
      * @return array<string, array<string, mixed>>
      */
     public function definitions(): array
     {
-        $definitions = config('projects', []);
+        if ($this->definitions !== null) {
+            return $this->definitions;
+        }
 
-        return is_array($definitions) ? array_filter($definitions, 'is_array') : [];
+        try {
+            return $this->definitions = Project::query()
+                ->published()
+                ->orderBy('sort_order')
+                ->get()
+                ->mapWithKeys(fn (Project $project): array => [$project->slug => $project->toDefinition()])
+                ->all();
+        } catch (QueryException|PDOException $exception) {
+            Log::error('Portfolio projects table unavailable, using seed files.', ['exception' => $exception->getMessage()]);
+
+            return $this->definitions = ProjectSeeder::definitions();
+        }
     }
 
     /**
@@ -119,7 +138,7 @@ class ProjectRepository
         $errors = [];
 
         if (! preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug)) {
-            $errors[] = "The file name [{$slug}.php] must be a lowercase slug (letters, numbers and dashes).";
+            $errors[] = "The slug [{$slug}] must be lowercase letters, numbers and dashes.";
         }
 
         $validator = Validator::make($definition, [
@@ -137,7 +156,7 @@ class ProjectRepository
             'logo' => ['nullable', 'string'],
             'cover' => ['nullable', 'string'],
             'cover_small' => ['nullable', 'string'],
-            'stack' => ['required', 'array', 'min:1'],
+            'stack' => ['present', 'array'],
             'stack.*' => ['string'],
             'content' => ['required', 'array'],
             "content.{$default}" => ['required', 'array'],
@@ -146,7 +165,7 @@ class ProjectRepository
             "content.{$default}.summary" => ['required', 'string'],
             "content.{$default}.problem" => ['required', 'string'],
             "content.{$default}.solution" => ['required', 'string'],
-            "content.{$default}.features" => ['required', 'array', 'min:1'],
+            "content.{$default}.features" => ['present', 'array'],
             "content.{$default}.audience" => ['nullable', 'string'],
             "content.{$default}.role" => ['nullable', 'string'],
         ]);
@@ -167,13 +186,16 @@ class ProjectRepository
     /**
      * @param  array<string, mixed>  $definition
      */
-    private function make(string $slug, array $definition, string $locale): Project
+    private function make(string $slug, array $definition, string $locale): LocalizedProject
     {
         $default = config('portfolio.default_locale');
-        $fallback = $definition['content'][$default];
-        $content = array_merge($fallback, array_filter($definition['content'][$locale] ?? [], fn ($value) => $value !== null && $value !== ''));
+        $translated = array_filter(
+            $definition['content'][$locale] ?? [],
+            fn ($value): bool => $value !== null && $value !== '' && $value !== [],
+        );
+        $content = array_merge($definition['content'][$default], $translated);
 
-        return new Project(
+        return new LocalizedProject(
             slug: $slug,
             name: $definition['name'],
             order: (int) $definition['order'],
@@ -187,16 +209,16 @@ class ProjectRepository
                 'url' => $link['url'],
             ], $definition['links'] ?? [])),
             accent: $definition['accent'],
-            logo: $definition['logo'] ?? null,
-            cover: $definition['cover'] ?? null,
-            coverSmall: $definition['cover_small'] ?? null,
-            stack: array_values($definition['stack']),
+            logoUrl: Project::mediaUrl($definition['logo'] ?? null),
+            coverUrl: Project::mediaUrl($definition['cover'] ?? null),
+            coverSmallUrl: Project::mediaUrl($definition['cover_small'] ?? null),
+            stack: array_values(array_filter($definition['stack'] ?? [], 'is_string')),
             category: $content['category'],
             tagline: $content['tagline'],
             summary: $content['summary'],
             problem: $content['problem'],
             solution: $content['solution'],
-            features: array_values($content['features']),
+            features: array_values(array_filter($content['features'] ?? [], fn ($feature): bool => is_string($feature) && $feature !== '')),
             audience: $content['audience'] ?? null,
             role: $content['role'] ?? null,
         );

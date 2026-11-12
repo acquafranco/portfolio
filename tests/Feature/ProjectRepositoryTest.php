@@ -2,21 +2,46 @@
 
 namespace Tests\Feature;
 
+use App\Models\Project;
 use App\Portfolio\ProjectRepository;
 use App\Portfolio\ProjectStatus;
+use Database\Seeders\ProjectSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ProjectRepositoryTest extends TestCase
 {
-    public function test_every_project_file_is_valid(): void
+    use RefreshDatabase;
+
+    public function test_the_migration_imports_the_initial_projects_with_their_images(): void
     {
+        $this->assertSame(['ascento', 'gula', 'domus'], Project::query()->orderBy('sort_order')->pluck('slug')->all());
+
+        foreach (Project::all() as $project) {
+            foreach (Project::IMAGE_COLUMNS as $column) {
+                $this->assertTrue(Project::isUploaded($project->{$column}), "{$project->slug}.{$column} should live on the public disk.");
+                Storage::disk('public')->assertExists($project->{$column});
+            }
+        }
+
         $this->assertSame([], app(ProjectRepository::class)->validationErrors());
     }
 
-    public function test_every_project_has_content_in_every_locale(): void
+    public function test_the_seeder_never_overwrites_admin_edits(): void
     {
-        foreach (app(ProjectRepository::class)->definitions() as $slug => $definition) {
+        Project::query()->where('slug', 'ascento')->update(['name' => 'Ascento (editado)']);
+
+        (new ProjectSeeder)->run();
+
+        $this->assertSame('Ascento (editado)', Project::query()->where('slug', 'ascento')->value('name'));
+        $this->assertSame(3, Project::query()->count());
+    }
+
+    public function test_every_seed_file_has_content_in_every_locale(): void
+    {
+        foreach (ProjectSeeder::definitions() as $slug => $definition) {
             foreach (array_keys(config('portfolio.locales')) as $locale) {
                 $this->assertArrayHasKey($locale, $definition['content'], "{$slug} has no {$locale} content.");
                 $this->assertCount(
@@ -32,26 +57,33 @@ class ProjectRepositoryTest extends TestCase
     {
         $this->assertSame(['ascento', 'gula', 'domus'], app(ProjectRepository::class)->all('es')->pluck('slug')->all());
 
-        config(['projects.domus.order' => 1]);
+        Project::query()->where('slug', 'domus')->update(['sort_order' => 1]);
 
         $this->assertSame('domus', (new ProjectRepository)->all('es')->first()->slug);
     }
 
     public function test_missing_translations_fall_back_to_the_default_locale(): void
     {
-        config(['projects.domus.content.en' => ['tagline' => 'Only the tagline is translated.']]);
+        $project = Project::query()->where('slug', 'domus')->first();
+        $content = $project->content;
+        $content['en'] = ['tagline' => 'Only the tagline is translated.', 'features' => [], 'summary' => ''];
+        $project->update(['content' => $content]);
 
-        $project = (new ProjectRepository)->find('domus', 'en');
+        $resolved = (new ProjectRepository)->find('domus', 'en');
 
-        $this->assertSame('Only the tagline is translated.', $project->tagline);
-        $this->assertSame(config('projects.domus.content.es.summary'), $project->summary);
+        $this->assertSame('Only the tagline is translated.', $resolved->tagline);
+        $this->assertSame($content['es']['summary'], $resolved->summary);
+        $this->assertSame($content['es']['features'], $resolved->features);
     }
 
     public function test_invalid_projects_are_skipped_and_logged_instead_of_breaking_the_site(): void
     {
         Log::spy();
 
-        config(['projects.broken' => ['name' => 'Broken', 'status' => 'shipped']]);
+        Project::withoutEvents(fn () => Project::query()->create([
+            'slug' => 'broken', 'name' => 'Broken', 'status' => 'production',
+            'accent' => 'red', 'stack' => [], 'content' => ['es' => ['tagline' => 'x']],
+        ]));
 
         $repository = new ProjectRepository;
 
@@ -65,39 +97,33 @@ class ProjectRepositoryTest extends TestCase
 
     public function test_missing_images_are_reported(): void
     {
-        config(['projects.gula.cover' => 'images/projects/gula/missing.webp']);
+        Project::query()->where('slug', 'gula')->update(['cover_path' => 'projects/missing.webp']);
 
-        $errors = (new ProjectRepository)->validationErrors();
-
-        $this->assertStringContainsString('missing.webp', $errors['gula'][0]);
+        $this->assertStringContainsString('missing.webp', (new ProjectRepository)->validationErrors()['gula'][0]);
     }
 
-    public function test_project_links_resolve_their_label_per_locale(): void
+    public function test_project_links_are_shown_on_the_project_page(): void
     {
-        config(['projects.ascento.links' => [
-            ['label' => ['es' => 'Tutoriales', 'en' => 'Tutorials'], 'url' => 'https://ascento.online/tutoriales'],
+        Project::query()->where('slug', 'ascento')->first()->update(['links' => [
+            ['label' => 'Tutoriales', 'url' => 'https://ascento.online/tutoriales'],
         ]]);
 
-        $repository = new ProjectRepository;
-
-        $this->assertSame('Tutorials', $repository->find('ascento', 'en')->links[0]['label']);
-        $this->assertSame('Tutoriales', $repository->find('ascento', 'pt')->links[0]['label']);
-        $this->get('/en/projects/ascento')->assertSee('Tutorials');
+        $this->get('/en/projects/ascento')->assertSee('Tutoriales')->assertSee('https://ascento.online/tutoriales');
     }
 
     public function test_status_filters_only_show_statuses_in_use(): void
     {
-        config(['projects.gula.status' => ProjectStatus::Experimental->value]);
+        Project::query()->where('slug', 'gula')->update(['status' => ProjectStatus::Experimental->value]);
 
         $this->get('/es')
             ->assertOk()
             ->assertSee(ProjectStatus::Experimental->label())
-            ->assertDontSee('>'.__('portfolio.status.development', [], 'es').' <', false);
+            ->assertDontSee(__('portfolio.status.development', [], 'es'));
     }
 
     public function test_non_featured_projects_render_as_compact_cards(): void
     {
-        config(['projects.gula.featured' => false]);
+        Project::query()->where('slug', 'gula')->update(['is_featured' => false]);
 
         $this->get('/es')->assertOk()->assertSee('GULA');
     }

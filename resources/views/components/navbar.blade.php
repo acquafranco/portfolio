@@ -12,10 +12,10 @@
     <div class="container-site flex h-16 items-center justify-between gap-6">
         <a href="{{ $home }}" class="group flex items-center gap-2.5 font-medium tracking-tight text-fg">
             <img src="{{ asset('favicon.svg') }}" alt="" width="28" height="28" class="h-7 w-7">
-            <span>{{ config('portfolio.name') }}</span>
+            <span class="whitespace-nowrap">{{ config('portfolio.name') }}</span>
         </a>
 
-        <nav aria-label="{{ __('portfolio.nav.label') }}" class="hidden md:block">
+        <nav aria-label="{{ __('portfolio.nav.label') }}" class="hidden lg:block">
             <ul class="flex items-center gap-1 text-sm text-muted">
                 @foreach ($navItems as $id => $label)
                     <li><a href="{{ $home }}#{{ $id }}" class="rounded-full px-3 py-2 transition-colors hover:text-fg">{{ $label }}</a></li>
@@ -24,13 +24,13 @@
         </nav>
 
         <div class="flex items-center gap-2">
-            <x-language-switcher class="hidden md:flex" />
-            <a href="{{ $home }}#contact" class="btn-primary hidden py-2 md:inline-flex">{{ __('portfolio.nav.cta') }}</a>
+            <x-language-switcher class="hidden lg:flex" />
+            <a href="{{ $home }}#contact" class="btn-primary hidden py-2 lg:inline-flex">{{ __('portfolio.nav.cta') }}</a>
 
             <button
                 type="button"
                 @click="toggle()"
-                class="-mr-2 inline-flex h-10 w-10 items-center justify-center rounded-full text-fg transition-colors hover:bg-raised md:hidden"
+                class="-mr-2 inline-flex h-10 w-10 items-center justify-center rounded-full text-fg transition-colors hover:bg-raised lg:hidden"
                 :aria-expanded="open.toString()"
                 aria-expanded="false"
                 aria-controls="mobile-menu"
@@ -48,7 +48,7 @@
         x-show="open"
         x-cloak
         x-transition.opacity.duration.150ms
-        class="border-t border-line bg-ink md:hidden"
+        class="border-t border-line bg-ink lg:hidden"
     >
         <ul class="container-site flex flex-col py-3 text-base">
             @foreach ($navItems + ['contact' => __('portfolio.nav.contact')] as $id => $label)

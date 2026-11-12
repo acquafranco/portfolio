@@ -80,17 +80,17 @@
                 </div>
 
                 <dl class="reveal reveal-4 mt-12 grid max-w-xl grid-cols-3 gap-6 border-t border-line pt-6">
-                    <div class="flex flex-col-reverse">
+                    <div class="flex flex-col-reverse justify-end">
                         <dt class="mt-1 text-xs leading-snug text-subtle">{{ __('portfolio.hero.facts.products') }}</dt>
-                        <dd class="text-2xl font-semibold tracking-tight text-fg">{{ $projects->count() }}</dd>
+                        <dd class="text-2xl font-semibold leading-8 tracking-tight text-fg">{{ $projects->count() }}</dd>
                     </div>
-                    <div class="flex flex-col-reverse">
+                    <div class="flex flex-col-reverse justify-end">
                         <dt class="mt-1 text-xs leading-snug text-subtle">{{ __('portfolio.hero.facts.live') }}</dt>
-                        <dd class="text-2xl font-semibold tracking-tight text-fg">{{ $liveCount }}</dd>
+                        <dd class="text-2xl font-semibold leading-8 tracking-tight text-fg">{{ $liveCount }}</dd>
                     </div>
-                    <div class="flex flex-col-reverse">
+                    <div class="flex flex-col-reverse justify-end">
                         <dt class="mt-1 text-xs leading-snug text-subtle">{{ __('portfolio.hero.facts.ownership') }}</dt>
-                        <dd class="font-mono text-2xl font-medium tracking-tight text-fg">0→1</dd>
+                        <dd class="font-mono text-2xl font-semibold leading-8 tracking-tight text-fg">0→1</dd>
                     </div>
                 </dl>
             </div>

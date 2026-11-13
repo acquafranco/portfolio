@@ -161,8 +161,7 @@ class PortfolioPagesTest extends TestCase
     {
         $this->get('/es')->assertSee(asset('cv/franco-acqua-cv-es.pdf'));
         $this->get('/pt')->assertSee(asset('cv/franco-acqua-cv-pt.pdf'));
-        // No English CV yet: falls back to the default language instead of a broken link.
-        $this->get('/en')->assertSee(asset('cv/franco-acqua-cv-es.pdf'))->assertDontSee('cv-en.pdf');
+        $this->get('/en')->assertSee(asset('cv/franco-acqua-cv-en.pdf'))->assertDontSee('cv-es.pdf');
 
         foreach (config('portfolio.cv') as $path) {
             $this->assertFileExists(public_path($path));

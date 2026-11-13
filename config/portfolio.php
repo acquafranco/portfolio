@@ -39,6 +39,7 @@ return [
     'cv' => [
         'es' => 'cv/franco-acqua-cv-es.pdf',
         'pt' => 'cv/franco-acqua-cv-pt.pdf',
+        'en' => 'cv/franco-acqua-cv-en.pdf',
     ],
 
     /*

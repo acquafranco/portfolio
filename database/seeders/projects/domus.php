@@ -27,7 +27,9 @@ return [
     'cover' => 'images/projects/domus/cover-v2.webp',
     'cover_small' => 'images/projects/domus/cover-v2-720.webp',
 
-    // Capturas de escritorio y de celular, por rol. Ver README.md, "Galería".
+    // Capturas de escritorio y de celular, por rol. Las de celular son siempre
+    // con sesión iniciada; la primera (un panel) acompaña a la portada.
+    // Ver README.md, "Galería".
     'gallery' => [
         ['device' => 'desktop', 'image' => 'images/projects/domus/gallery/landing.webp', 'image_small' => 'images/projects/domus/gallery/landing-800.webp', 'caption' => ['es' => 'Sitio · Presentación del producto', 'pt' => 'Site · Apresentação do produto', 'en' => 'Website · Product landing']],
         ['device' => 'desktop', 'image' => 'images/projects/domus/gallery/admin-dashboard.webp', 'image_small' => 'images/projects/domus/gallery/admin-dashboard-800.webp', 'caption' => ['es' => 'Administración · Panel principal', 'pt' => 'Administração · Painel principal', 'en' => 'Management office · Dashboard']],
@@ -35,9 +37,9 @@ return [
         ['device' => 'desktop', 'image' => 'images/projects/domus/gallery/admin-claim.webp', 'image_small' => 'images/projects/domus/gallery/admin-claim-800.webp', 'caption' => ['es' => 'Administración · Detalle de un reclamo', 'pt' => 'Administração · Detalhe do chamado', 'en' => 'Management office · Claim detail']],
         ['device' => 'desktop', 'image' => 'images/projects/domus/gallery/admin-map.webp', 'image_small' => 'images/projects/domus/gallery/admin-map-800.webp', 'caption' => ['es' => 'Administración · Mapa de edificios', 'pt' => 'Administração · Mapa de prédios', 'en' => 'Management office · Building map']],
         ['device' => 'desktop', 'image' => 'images/projects/domus/gallery/admin-agenda.webp', 'image_small' => 'images/projects/domus/gallery/admin-agenda-800.webp', 'caption' => ['es' => 'Administración · Agenda y vencimientos', 'pt' => 'Administração · Agenda e vencimentos', 'en' => 'Management office · Calendar and expiries']],
-        ['device' => 'mobile', 'image' => 'images/projects/domus/gallery/m-landing.webp', 'image_small' => null, 'caption' => ['es' => 'Sitio · Versión móvil', 'pt' => 'Site · Versão mobile', 'en' => 'Website · Mobile']],
         ['device' => 'mobile', 'image' => 'images/projects/domus/gallery/m-admin-dashboard.webp', 'image_small' => null, 'caption' => ['es' => 'Administración · Panel', 'pt' => 'Administração · Painel', 'en' => 'Management office · Dashboard']],
         ['device' => 'mobile', 'image' => 'images/projects/domus/gallery/m-caretaker-home.webp', 'image_small' => null, 'caption' => ['es' => 'Encargado · Inicio', 'pt' => 'Zelador · Início', 'en' => 'Caretaker · Home']],
+        ['device' => 'mobile', 'image' => 'images/projects/domus/gallery/m-caretaker-claims.webp', 'image_small' => null, 'caption' => ['es' => 'Encargado · Reclamos', 'pt' => 'Zelador · Chamados', 'en' => 'Caretaker · Claims']],
         ['device' => 'mobile', 'image' => 'images/projects/domus/gallery/m-caretaker-clock.webp', 'image_small' => null, 'caption' => ['es' => 'Encargado · Fichaje', 'pt' => 'Zelador · Registro de ponto', 'en' => 'Caretaker · Clock in']],
         ['device' => 'mobile', 'image' => 'images/projects/domus/gallery/m-owner-portal.webp', 'image_small' => null, 'caption' => ['es' => 'Propietario · Mi portal', 'pt' => 'Proprietário · Meu portal', 'en' => 'Owner · My portal']],
         ['device' => 'mobile', 'image' => 'images/projects/domus/gallery/m-supplier-jobs.webp', 'image_small' => null, 'caption' => ['es' => 'Proveedor · Mis trabajos', 'pt' => 'Fornecedor · Meus trabalhos', 'en' => 'Supplier · My jobs']],

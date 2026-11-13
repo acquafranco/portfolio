@@ -45,6 +45,37 @@ class ProjectRepositoryTest extends TestCase
         }
     }
 
+    public function test_the_first_mobile_screenshot_of_each_project_is_a_logged_in_dashboard(): void
+    {
+        $expected = ['ascento' => 'Empresa · Panel', 'gula' => 'Restaurante · Panel de administración', 'domus' => 'Administración · Panel'];
+
+        foreach ($expected as $slug => $caption) {
+            $this->assertSame($caption, (new ProjectRepository)->find($slug, 'es')->phoneShot()['caption']);
+        }
+    }
+
+    public function test_refreshing_the_seeded_screenshots_keeps_galleries_uploaded_from_the_admin(): void
+    {
+        $migration = require database_path('migrations/2026_11_13_213521_refresh_seeded_mobile_screenshots.php');
+        $uploaded = [['image' => 'projects/abc123-600.opt.webp', 'image_small' => null, 'device' => 'mobile', 'caption' => ['es' => 'Subida desde el panel']]];
+        Storage::disk('public')->put('projects/domus-gallery-m-landing.webp', 'old');
+
+        Project::query()->where('slug', 'gula')->firstOrFail()->forceFill(['gallery' => $uploaded])->saveQuietly();
+        Project::query()->where('slug', 'domus')->firstOrFail()->forceFill(['gallery' => [
+            ['image' => 'projects/domus-gallery-m-landing.webp', 'image_small' => null, 'device' => 'mobile', 'caption' => ['es' => 'Sitio']],
+        ]])->saveQuietly();
+
+        $migration->up();
+
+        $this->assertSame($uploaded, Project::query()->where('slug', 'gula')->firstOrFail()->gallery);
+
+        $domus = Project::query()->where('slug', 'domus')->firstOrFail()->gallery;
+        $this->assertCount(12, $domus);
+        $this->assertSame('Administración · Panel', collect($domus)->firstWhere('device', 'mobile')['caption']['es']);
+        Storage::disk('public')->assertMissing('projects/domus-gallery-m-landing.webp');
+        Storage::disk('public')->assertExists(array_column($domus, 'image'));
+    }
+
     public function test_the_seeder_never_overwrites_admin_edits(): void
     {
         Project::query()->where('slug', 'ascento')->update(['name' => 'Ascento (editado)']);

@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use App\Models\Project;
 use Database\Seeders\ProjectSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Storage;
@@ -31,12 +30,10 @@ abstract class TestCase extends BaseTestCase
 
         foreach (ProjectSeeder::definitions() as $slug => $definition) {
             foreach (['logo', 'cover', 'cover_small'] as $key) {
-                $source = $definition[$key] ?? null;
-
-                if ($source !== null && ! Project::isUploaded($source) && is_file(public_path($source))) {
-                    Storage::disk('public')->put('projects/'.$slug.'-'.basename($source), (string) file_get_contents(public_path($source)));
-                }
+                ProjectSeeder::copyToStorage($definition[$key] ?? null, $slug);
             }
+
+            ProjectSeeder::copyGalleryToStorage($definition['gallery'] ?? [], $slug);
         }
     }
 }

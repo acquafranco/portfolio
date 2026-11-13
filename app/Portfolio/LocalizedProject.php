@@ -12,6 +12,7 @@ final readonly class LocalizedProject
      * @param  list<array{label: string, url: string}>  $links
      * @param  list<string>  $stack
      * @param  list<string>  $features
+     * @param  list<array{url: string, small_url: string|null, device: ScreenshotDevice, caption: string|null}>  $gallery
      */
     public function __construct(
         public string $slug,
@@ -39,7 +40,26 @@ final readonly class LocalizedProject
         public ?string $testimonial = null,
         public ?string $testimonialAuthor = null,
         public ProjectKind $kind = ProjectKind::Product,
+        public array $gallery = [],
     ) {}
+
+    /**
+     * @return list<array{url: string, small_url: string|null, device: ScreenshotDevice, caption: string|null}>
+     */
+    public function screenshots(ScreenshotDevice $device): array
+    {
+        return array_values(array_filter($this->gallery, fn (array $shot): bool => $shot['device'] === $device));
+    }
+
+    /**
+     * First phone screenshot, shown next to the cover.
+     *
+     * @return array{url: string, small_url: string|null, device: ScreenshotDevice, caption: string|null}|null
+     */
+    public function phoneShot(): ?array
+    {
+        return $this->screenshots(ScreenshotDevice::Mobile)[0] ?? null;
+    }
 
     /**
      * Bare host of the live URL, e.g. "ascento.online".

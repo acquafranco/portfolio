@@ -150,6 +150,38 @@ class AdminPanelTest extends TestCase
         $this->get('/es/projects/gula')->assertSee('Frase editada desde el panel.')->assertSee(__('portfolio.status.production', [], 'es'));
     }
 
+    public function test_admin_uploads_gallery_screenshots_and_they_are_converted_to_webp(): void
+    {
+        $this->actingAs($this->admin());
+        $project = Project::query()->where('slug', 'domus')->firstOrFail();
+        $removed = array_column($project->gallery, 'image');
+
+        Livewire::test(EditProject::class, ['record' => $project->getRouteKey()])
+            ->set('data.gallery', [
+                'desk' => ['image' => [], 'device' => 'desktop', 'caption' => ['es' => 'Oficina · Panel', 'pt' => null, 'en' => 'Office · Dashboard'], 'image_small' => null],
+                'phone' => ['image' => [], 'device' => 'mobile', 'caption' => ['es' => 'Encargado · Inicio', 'pt' => null, 'en' => null], 'image_small' => null],
+            ])
+            ->set('data.gallery.desk.image', UploadedFile::fake()->image('escritorio.png', 2160, 1350))
+            ->set('data.gallery.phone.image', UploadedFile::fake()->image('celular.png', 1170, 2532))
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        [$desktop, $mobile] = $project->refresh()->gallery;
+
+        $this->assertSame('desktop', $desktop['device']);
+        $this->assertSame([1600, 1000], array_slice(getimagesizefromstring(Storage::disk('public')->get($desktop['image'])), 0, 2));
+        $this->assertSame([800, 500], array_slice(getimagesizefromstring(Storage::disk('public')->get($desktop['image_small'])), 0, 2));
+        $this->assertSame([600, 1298], array_slice(getimagesizefromstring(Storage::disk('public')->get($mobile['image'])), 0, 2));
+        $this->assertNull($mobile['image_small']);
+        $this->assertSame([], Storage::disk('public')->files('projects/uploads'));
+        Storage::disk('public')->assertMissing($removed);
+
+        $this->get('/en/projects/domus')
+            ->assertSee('Office · Dashboard')
+            ->assertSee('Encargado · Inicio') // falls back to Spanish
+            ->assertSee(asset('storage/'.$mobile['image']));
+    }
+
     public function test_deleting_a_project_removes_it_and_its_files(): void
     {
         $this->actingAs($this->admin());

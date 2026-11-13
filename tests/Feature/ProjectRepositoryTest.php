@@ -29,6 +29,22 @@ class ProjectRepositoryTest extends TestCase
         $this->assertSame([], app(ProjectRepository::class)->validationErrors());
     }
 
+    public function test_the_seeded_projects_have_desktop_and_mobile_screenshots_on_the_public_disk(): void
+    {
+        foreach (Project::all() as $project) {
+            $devices = array_count_values(array_column($project->gallery, 'device'));
+
+            $this->assertGreaterThanOrEqual(3, $devices['desktop'] ?? 0, "{$project->slug} needs desktop screenshots.");
+            $this->assertGreaterThanOrEqual(3, $devices['mobile'] ?? 0, "{$project->slug} needs mobile screenshots.");
+
+            foreach ($project->gallery as $shot) {
+                $this->assertTrue(Project::isUploaded($shot['image']));
+                Storage::disk('public')->assertExists($shot['image']);
+                $this->assertNotEmpty($shot['caption']['es']);
+            }
+        }
+    }
+
     public function test_the_seeder_never_overwrites_admin_edits(): void
     {
         Project::query()->where('slug', 'ascento')->update(['name' => 'Ascento (editado)']);
@@ -100,6 +116,32 @@ class ProjectRepositoryTest extends TestCase
         Project::query()->where('slug', 'gula')->update(['cover_path' => 'projects/missing.webp']);
 
         $this->assertStringContainsString('missing.webp', (new ProjectRepository)->validationErrors()['gula'][0]);
+    }
+
+    public function test_missing_gallery_images_and_unknown_devices_are_reported(): void
+    {
+        $project = Project::query()->where('slug', 'gula')->firstOrFail();
+        Project::withoutEvents(fn () => $project->update(['gallery' => [['image' => 'projects/missing-shot.webp', 'device' => 'mobile']]]));
+
+        $this->assertStringContainsString('missing-shot.webp', implode(' ', (new ProjectRepository)->validationErrors()['gula']));
+
+        Project::withoutEvents(fn () => $project->update(['gallery' => [['image' => 'projects/missing-shot.webp', 'device' => 'tablet']]]));
+        Log::spy();
+
+        $this->assertNull((new ProjectRepository)->find('gula', 'es'));
+    }
+
+    public function test_gallery_captions_fall_back_to_the_default_locale(): void
+    {
+        $project = Project::query()->where('slug', 'domus')->firstOrFail();
+        $gallery = $project->gallery;
+        $gallery[0]['caption'] = ['es' => 'Administración · Solo en español', 'pt' => '', 'en' => 'Office · English caption'];
+        Project::withoutEvents(fn () => $project->update(['gallery' => $gallery]));
+
+        $repository = new ProjectRepository;
+
+        $this->assertSame('Administración · Solo en español', $repository->find('domus', 'pt')->gallery[0]['caption']);
+        $this->assertSame('Office · English caption', $repository->find('domus', 'en')->gallery[0]['caption']);
     }
 
     public function test_project_links_are_shown_on_the_project_page(): void

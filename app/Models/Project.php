@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Portfolio\ProjectImageOptimizer;
 use App\Portfolio\ProjectKind;
 use App\Portfolio\ProjectStatus;
+use App\Portfolio\ScreenshotDevice;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +15,8 @@ use Illuminate\Support\Facades\Storage;
  *
  * Images: paths starting with "images/" live in public/ (shipped with the
  * repo); any other path is a file uploaded to the "public" storage disk.
- * Uploaded covers and logos are converted to WebP when saved.
+ * Uploaded covers, logos and gallery screenshots are converted to WebP
+ * when saved.
  *
  * @property int $id
  * @property string $slug
@@ -31,6 +33,7 @@ use Illuminate\Support\Facades\Storage;
  * @property string|null $logo_path
  * @property string|null $cover_path
  * @property string|null $cover_small_path
+ * @property list<array{image: string, image_small?: string|null, device: string, caption?: array<string, string|null>}>|null $gallery
  * @property list<string> $stack
  * @property array<string, array<string, mixed>> $content
  * @property list<array{label: string, url: string}>|null $links
@@ -41,7 +44,7 @@ class Project extends Model
 
     protected $fillable = [
         'slug', 'name', 'sort_order', 'is_featured', 'is_published', 'status', 'kind', 'year', 'url',
-        'repository', 'accent', 'logo_path', 'cover_path', 'cover_small_path', 'stack', 'content', 'links',
+        'repository', 'accent', 'logo_path', 'cover_path', 'cover_small_path', 'gallery', 'stack', 'content', 'links',
     ];
 
     protected function casts(): array
@@ -56,6 +59,7 @@ class Project extends Model
             'stack' => 'array',
             'content' => 'array',
             'links' => 'array',
+            'gallery' => 'array',
         ];
     }
 
@@ -83,26 +87,75 @@ class Project extends Model
             if ($project->isDirty('logo_path') && self::isUploaded($project->logo_path) && ! $optimizer->isOptimized($project->logo_path)) {
                 $project->logo_path = $optimizer->logo($project->logo_path) ?? $project->logo_path;
             }
+
+            if ($project->isDirty('gallery')) {
+                $project->gallery = self::optimizedGallery($project->gallery ?? [], $optimizer);
+            }
         });
 
         // Remove uploaded files that were replaced or removed.
         static::updated(function (Project $project): void {
-            foreach (self::IMAGE_COLUMNS as $column) {
-                $previous = $project->getOriginal($column);
+            $current = self::mediaPaths($project->only(self::IMAGE_COLUMNS), $project->gallery);
+            $previous = self::mediaPaths(
+                array_map(fn (string $column): ?string => $project->getOriginal($column), array_combine(self::IMAGE_COLUMNS, self::IMAGE_COLUMNS)),
+                $project->getOriginal('gallery'),
+            );
 
-                if ($project->wasChanged($column) && self::isUploaded($previous) && ! in_array($previous, $project->only(self::IMAGE_COLUMNS), true)) {
-                    Storage::disk('public')->delete($previous);
+            foreach (array_diff($previous, $current) as $path) {
+                if (self::isUploaded($path)) {
+                    Storage::disk('public')->delete($path);
                 }
             }
         });
 
         static::deleted(function (Project $project): void {
-            foreach (self::IMAGE_COLUMNS as $column) {
-                if (self::isUploaded($project->{$column})) {
-                    Storage::disk('public')->delete($project->{$column});
+            foreach (self::mediaPaths($project->only(self::IMAGE_COLUMNS), $project->gallery) as $path) {
+                if (self::isUploaded($path)) {
+                    Storage::disk('public')->delete($path);
                 }
             }
         });
+    }
+
+    /**
+     * Uploaded screenshots become WebP (desktop 1600 + 800 px, mobile 600 px).
+     *
+     * @param  array<int|string, array<string, mixed>>  $gallery
+     * @return list<array<string, mixed>>
+     */
+    private static function optimizedGallery(array $gallery, ProjectImageOptimizer $optimizer): array
+    {
+        return array_values(array_map(function (array $item) use ($optimizer): array {
+            $image = $item['image'] ?? null;
+
+            if (is_string($image) && self::isUploaded($image) && ! $optimizer->isOptimized($image)) {
+                $device = ScreenshotDevice::tryFrom((string) ($item['device'] ?? '')) ?? ScreenshotDevice::Desktop;
+                $result = $optimizer->screenshot($image, $device);
+
+                [$item['image'], $item['image_small']] = $result ?? [$image, null];
+            }
+
+            return $item;
+        }, $gallery));
+    }
+
+    /**
+     * Every image path referenced by the image columns and the gallery.
+     *
+     * @param  array<string, string|null>  $columns
+     * @param  array<int|string, array<string, mixed>>|null  $gallery
+     * @return list<string>
+     */
+    private static function mediaPaths(array $columns, ?array $gallery): array
+    {
+        $paths = array_values($columns);
+
+        foreach ($gallery ?? [] as $item) {
+            $paths[] = $item['image'] ?? null;
+            $paths[] = $item['image_small'] ?? null;
+        }
+
+        return array_values(array_filter($paths, fn ($path): bool => is_string($path) && $path !== ''));
     }
 
     /**
@@ -163,6 +216,7 @@ class Project extends Model
             'logo' => $this->logo_path,
             'cover' => $this->cover_path,
             'cover_small' => $this->cover_small_path,
+            'gallery' => $this->gallery ?? [],
             'stack' => $this->stack ?? [],
             'content' => $this->content ?? [],
         ];
@@ -189,6 +243,7 @@ class Project extends Model
             'logo_path' => $definition['logo'] ?? null,
             'cover_path' => $definition['cover'] ?? null,
             'cover_small_path' => $definition['cover_small'] ?? null,
+            'gallery' => $definition['gallery'] ?? [],
             'stack' => $definition['stack'] ?? [],
             'content' => $definition['content'] ?? [],
             'links' => $definition['links'] ?? [],

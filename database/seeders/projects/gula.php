@@ -22,8 +22,24 @@ return [
 
     'accent' => '#EC4A2C',
     'logo' => 'images/projects/gula/logo.webp',
-    'cover' => 'images/projects/gula/cover.webp',
-    'cover_small' => 'images/projects/gula/cover-720.webp',
+    'cover' => 'images/projects/gula/cover-v2.webp',
+    'cover_small' => 'images/projects/gula/cover-v2-720.webp',
+
+    // Capturas de escritorio y de celular, por rol. Ver README.md, "Galería".
+    'gallery' => [
+        ['device' => 'desktop', 'image' => 'images/projects/gula/gallery/diner-home.webp', 'image_small' => 'images/projects/gula/gallery/diner-home-800.webp', 'caption' => ['es' => 'Comensal · Inicio por antojos', 'pt' => 'Cliente · Início por desejos', 'en' => 'Diner · Home by craving']],
+        ['device' => 'desktop', 'image' => 'images/projects/gula/gallery/diner-explore.webp', 'image_small' => 'images/projects/gula/gallery/diner-explore-800.webp', 'caption' => ['es' => 'Comensal · Explorar restaurantes', 'pt' => 'Cliente · Explorar restaurantes', 'en' => 'Diner · Browse restaurants']],
+        ['device' => 'desktop', 'image' => 'images/projects/gula/gallery/diner-nearby.webp', 'image_small' => 'images/projects/gula/gallery/diner-nearby-800.webp', 'caption' => ['es' => 'Comensal · Cerca mío en el mapa', 'pt' => 'Cliente · Perto de mim no mapa', 'en' => 'Diner · Near me on the map']],
+        ['device' => 'desktop', 'image' => 'images/projects/gula/gallery/restaurant-analytics.webp', 'image_small' => 'images/projects/gula/gallery/restaurant-analytics-800.webp', 'caption' => ['es' => 'Restaurante · Estadísticas', 'pt' => 'Restaurante · Estatísticas', 'en' => 'Restaurant · Analytics']],
+        ['device' => 'desktop', 'image' => 'images/projects/gula/gallery/restaurant-menu.webp', 'image_small' => 'images/projects/gula/gallery/restaurant-menu-800.webp', 'caption' => ['es' => 'Restaurante · Gestión de la carta', 'pt' => 'Restaurante · Gestão do cardápio', 'en' => 'Restaurant · Menu management']],
+        ['device' => 'desktop', 'image' => 'images/projects/gula/gallery/superadmin-dashboard.webp', 'image_small' => 'images/projects/gula/gallery/superadmin-dashboard-800.webp', 'caption' => ['es' => 'Superadmin · Centro de control', 'pt' => 'Superadmin · Central de controle', 'en' => 'Super admin · Control center']],
+        ['device' => 'mobile', 'image' => 'images/projects/gula/gallery/m-diner-home.webp', 'image_small' => null, 'caption' => ['es' => 'Comensal · Inicio', 'pt' => 'Cliente · Início', 'en' => 'Diner · Home']],
+        ['device' => 'mobile', 'image' => 'images/projects/gula/gallery/m-diner-nearby.webp', 'image_small' => null, 'caption' => ['es' => 'Comensal · Cerca mío', 'pt' => 'Cliente · Perto de mim', 'en' => 'Diner · Near me']],
+        ['device' => 'mobile', 'image' => 'images/projects/gula/gallery/m-diner-restaurant.webp', 'image_small' => null, 'caption' => ['es' => 'Comensal · Ficha del restaurante', 'pt' => 'Cliente · Página do restaurante', 'en' => 'Diner · Restaurant page']],
+        ['device' => 'mobile', 'image' => 'images/projects/gula/gallery/m-diner-top.webp', 'image_small' => null, 'caption' => ['es' => 'Comensal · Top por zona', 'pt' => 'Cliente · Top por região', 'en' => 'Diner · Top by area']],
+        ['device' => 'mobile', 'image' => 'images/projects/gula/gallery/m-restaurant-analytics.webp', 'image_small' => null, 'caption' => ['es' => 'Restaurante · Estadísticas', 'pt' => 'Restaurante · Estatísticas', 'en' => 'Restaurant · Analytics']],
+        ['device' => 'mobile', 'image' => 'images/projects/gula/gallery/m-superadmin-dashboard.webp', 'image_small' => null, 'caption' => ['es' => 'Superadmin · Panel', 'pt' => 'Superadmin · Painel', 'en' => 'Super admin · Dashboard']],
+    ],
 
     'stack' => ['Laravel 13', 'PHP 8', 'Blade', 'Alpine.js', 'Tailwind CSS', 'MySQL', 'MapLibre GL', 'Mercado Pago', 'PWA + Web Push'],
 

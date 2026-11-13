@@ -58,6 +58,7 @@ Los proyectos se cargan desde **`/admin`** (Filament 5), con usuario administrad
 
 - Crear, editar, despublicar y borrar proyectos.
 - Subir la **captura** (se recorta a 1200×630 desde arriba y se convierte a WebP 1200 + 720 px) y el **logo** (160×160 WebP; los SVG se guardan tal cual). Al reemplazar o borrar, los archivos viejos se eliminan.
+- Armar la **galería**: capturas de escritorio (WebP 1600 + 800 px) y de celular (WebP 600 px), cada una con su descripción por idioma ("Rol · Pantalla", p. ej. *Comensal · Inicio*). Se ordenan arrastrando. La primera de celular aparece también en un marco de teléfono junto a la captura principal.
 - Escribir la descripción en español (obligatorio), portugués e inglés (opcionales: lo vacío se muestra en español): categoría, frase, resumen, problema, solución, funcionalidades, para quién es y rol.
 - Definir estado (producción / desarrollo / experimental), destacado, año, color de identidad, tecnologías, sitio, repositorio y enlaces extra.
 - Ordenar arrastrando las filas.
@@ -72,6 +73,10 @@ php artisan portfolio:admin tu@email.com --password='...'      # no interactivo 
 ```
 
 Si el email ya existe, actualiza la contraseña. No hay registro público: solo entran usuarios con `is_admin`.
+
+### Galería
+
+Cada proyecto puede tener capturas de escritorio (1440×900) y de celular (390×844), por rol. En la página del proyecto se muestran en marcos de navegador y de teléfono, con un visor para ampliarlas. Las de Ascento, GULA y DOMUS están en `public/images/projects/{slug}/gallery/` y se definen en `gallery` dentro de `database/seeders/projects/{slug}.php`; la migración `add_gallery_to_projects_table` las carga en los proyectos que todavía no tienen galería.
 
 ### Datos iniciales
 

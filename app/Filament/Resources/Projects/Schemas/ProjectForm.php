@@ -4,8 +4,10 @@ namespace App\Filament\Resources\Projects\Schemas;
 
 use App\Portfolio\ProjectKind;
 use App\Portfolio\ProjectStatus;
+use App\Portfolio\ScreenshotDevice;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
@@ -72,6 +74,50 @@ class ProjectForm
                                         ->map(fn (array $locale, string $code): Tab => self::contentTab($code, $locale['label']))
                                         ->values()
                                         ->all()),
+                            ]),
+
+                        Section::make('Galería')
+                            ->description('Capturas de escritorio y de celular, idealmente de cada rol. La primera de celular también aparece junto a la captura principal.')
+                            ->collapsible()
+                            ->schema([
+                                Repeater::make('gallery')
+                                    ->hiddenLabel()
+                                    ->columns(2)
+                                    ->defaultItems(0)
+                                    ->reorderable()
+                                    ->collapsible()
+                                    ->itemLabel(fn (array $state): ?string => $state['caption']['es'] ?? null)
+                                    ->addActionLabel('Agregar captura')
+                                    ->schema([
+                                        FileUpload::make('image')
+                                            ->label('Captura')
+                                            ->helperText('Escritorio: 1440×900 o similar (WebP 1600 + 800 px). Celular: 390×844 (WebP 600 px).')
+                                            ->image()
+                                            ->disk('public')
+                                            ->visibility('public')
+                                            ->directory('projects/uploads')
+                                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                                            ->maxSize(8192)
+                                            ->required(),
+                                        Grid::make(1)->schema([
+                                            Select::make('device')
+                                                ->label('Dispositivo')
+                                                ->options(collect(ScreenshotDevice::cases())->mapWithKeys(fn (ScreenshotDevice $device): array => [
+                                                    $device->value => __('portfolio.gallery.'.$device->value, [], 'es'),
+                                                ])->all())
+                                                ->default(ScreenshotDevice::Desktop->value)
+                                                ->required()
+                                                ->native(false),
+                                            ...collect(config('portfolio.locales'))
+                                                ->map(fn (array $locale, string $code): TextInput => TextInput::make("caption.{$code}")
+                                                    ->label("Descripción ({$locale['label']})")
+                                                    ->placeholder($code === config('portfolio.default_locale') ? 'Rol · Pantalla, p. ej. Comensal · Inicio' : 'Vacío: se usa el español')
+                                                    ->maxLength(80))
+                                                ->values()
+                                                ->all(),
+                                            Hidden::make('image_small'),
+                                        ]),
+                                    ]),
                             ]),
 
                         Section::make('Enlaces extra')

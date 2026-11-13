@@ -83,6 +83,44 @@ class PortfolioPagesTest extends TestCase
         }
     }
 
+    public function test_project_page_shows_desktop_and_mobile_screenshots_by_role(): void
+    {
+        $gula = Project::query()->where('slug', 'gula')->firstOrFail();
+        $mobile = collect($gula->gallery)->firstWhere('device', 'mobile');
+
+        $this->get('/es/projects/gula')
+            ->assertOk()
+            ->assertSee(__('portfolio.gallery.heading', [], 'es'))
+            ->assertSee(__('portfolio.gallery.desktop', [], 'es'))
+            ->assertSee(__('portfolio.gallery.mobile', [], 'es'))
+            ->assertSee('Comensal · Inicio por antojos')
+            ->assertSee('Restaurante · Estadísticas')
+            ->assertSee('Superadmin · Centro de control')
+            ->assertSee(Project::mediaUrl($mobile['image']));
+
+        $this->get('/en/projects/gula')->assertSee('Restaurant · Analytics')->assertSee('Diner · Near me');
+        $this->get('/pt/projects/ascento')->assertSee('Técnico · Início do dia');
+    }
+
+    public function test_home_shows_a_phone_screenshot_next_to_each_cover(): void
+    {
+        $response = $this->get('/es')->assertOk();
+
+        foreach (Project::all() as $project) {
+            $response->assertSee(__('portfolio.gallery.phone_alt', ['name' => $project->name], 'es'));
+        }
+    }
+
+    public function test_projects_without_gallery_render_without_the_gallery_section(): void
+    {
+        Project::query()->where('slug', 'domus')->update(['gallery' => null]);
+
+        $this->get('/es/projects/domus')
+            ->assertOk()
+            ->assertDontSee('id="gallery-title"', false)
+            ->assertDontSee(__('portfolio.gallery.phone_alt', ['name' => 'DOMUS'], 'es'));
+    }
+
     public function test_domus_does_not_promise_features_it_does_not_implement(): void
     {
         foreach (['es' => 'expensa', 'pt' => 'cobran', 'en' => 'dues'] as $locale => $word) {

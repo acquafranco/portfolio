@@ -84,6 +84,8 @@
             </div>
         </header>
 
+        <x-project-gallery :project="$project" />
+
         {{-- BODY ------------------------------------------------------ --}}
         <div class="container-site grid grid-cols-1 gap-14 py-16 md:py-24 lg:grid-cols-12">
             <aside class="lg:col-span-4">

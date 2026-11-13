@@ -95,6 +95,16 @@ class ProjectRepository
                 }
             }
 
+            foreach ($definition['gallery'] ?? [] as $index => $shot) {
+                foreach (['image', 'image_small'] as $imageKey) {
+                    $path = is_array($shot) ? ($shot[$imageKey] ?? null) : null;
+
+                    if (is_string($path) && ! Project::mediaExists($path)) {
+                        $projectErrors[] = "The gallery.{$index}.{$imageKey} file [{$path}] does not exist.";
+                    }
+                }
+            }
+
             if ($projectErrors !== []) {
                 $errors[$slug] = $projectErrors;
             }
@@ -157,6 +167,11 @@ class ProjectRepository
             'logo' => ['nullable', 'string'],
             'cover' => ['nullable', 'string'],
             'cover_small' => ['nullable', 'string'],
+            'gallery' => ['nullable', 'array'],
+            'gallery.*.image' => ['required', 'string'],
+            'gallery.*.image_small' => ['nullable', 'string'],
+            'gallery.*.device' => ['required', Rule::in(ScreenshotDevice::values())],
+            'gallery.*.caption' => ['nullable', 'array'],
             'stack' => ['present', 'array'],
             'stack.*' => ['string'],
             'content' => ['required', 'array'],
@@ -216,6 +231,7 @@ class ProjectRepository
             logoUrl: Project::mediaUrl($definition['logo'] ?? null),
             coverUrl: Project::mediaUrl($definition['cover'] ?? null),
             coverSmallUrl: Project::mediaUrl($definition['cover_small'] ?? null),
+            gallery: $this->gallery($definition['gallery'] ?? [], $locale),
             stack: array_values(array_filter($definition['stack'] ?? [], 'is_string')),
             category: $content['category'],
             tagline: $content['tagline'],
@@ -228,5 +244,28 @@ class ProjectRepository
             testimonial: $content['testimonial'] ?? null,
             testimonialAuthor: $content['testimonial_author'] ?? null,
         );
+    }
+
+    /**
+     * Gallery screenshots with absolute URLs and the caption in $locale
+     * (falls back to the default locale).
+     *
+     * @param  array<int|string, array<string, mixed>>  $gallery
+     * @return list<array{url: string, small_url: string|null, device: ScreenshotDevice, caption: string|null}>
+     */
+    private function gallery(array $gallery, string $locale): array
+    {
+        $default = config('portfolio.default_locale');
+
+        return array_values(array_map(function (array $shot) use ($locale, $default): array {
+            $captions = array_filter((array) ($shot['caption'] ?? []), fn ($caption): bool => is_string($caption) && $caption !== '');
+
+            return [
+                'url' => (string) Project::mediaUrl($shot['image']),
+                'small_url' => Project::mediaUrl($shot['image_small'] ?? null),
+                'device' => ScreenshotDevice::from($shot['device']),
+                'caption' => $captions[$locale] ?? $captions[$default] ?? null,
+            ];
+        }, $gallery));
     }
 }

@@ -46,6 +46,39 @@ Alpine.data('copyText', (text) => ({
     },
 }));
 
+/**
+ * Screenshot lightbox for the project gallery: arrows, Escape and click
+ * outside close it; focus goes back to where it was.
+ */
+Alpine.data('screenshotGallery', (shots) => ({
+    shots,
+    index: 0,
+    isOpen: false,
+    returnFocus: null,
+    get current() {
+        return this.shots[this.index] ?? { url: '', caption: null, mobile: false };
+    },
+    open(index) {
+        this.index = index;
+        this.returnFocus = document.activeElement;
+        this.isOpen = true;
+        document.documentElement.classList.add('overflow-hidden');
+        this.$nextTick(() => this.$refs.closeButton?.focus());
+    },
+    close() {
+        if (!this.isOpen) return;
+        this.isOpen = false;
+        document.documentElement.classList.remove('overflow-hidden');
+        this.returnFocus?.focus();
+    },
+    next() {
+        this.index = (this.index + 1) % this.shots.length;
+    },
+    previous() {
+        this.index = (this.index - 1 + this.shots.length) % this.shots.length;
+    },
+}));
+
 window.Alpine = Alpine;
 Alpine.start();
 

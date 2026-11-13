@@ -77,6 +77,20 @@ return [
         'cta_text' => 'Contame cómo trabajan hoy y vemos si el software lo puede resolver.',
     ],
 
+    'gallery' => [
+        'eyebrow' => 'Capturas',
+        'heading' => 'Así se ve por dentro',
+        'text' => 'Pantallas reales del producto, en la computadora y en el celular, para cada tipo de usuario.',
+        'desktop' => 'Escritorio',
+        'mobile' => 'Celular',
+        'open' => 'Ampliar captura',
+        'close' => 'Cerrar',
+        'previous' => 'Captura anterior',
+        'next' => 'Captura siguiente',
+        'shot_alt' => ':name — :caption',
+        'phone_alt' => ':name en el celular',
+    ],
+
     'about' => [
         'eyebrow' => 'Sobre mí',
         'heading' => 'Más de 10 años construyendo software que hace crecer negocios.',

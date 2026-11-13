@@ -24,8 +24,24 @@ return [
 
     'accent' => '#FF6A1A',
     'logo' => 'images/projects/ascento/logo.webp',
-    'cover' => 'images/projects/ascento/cover.webp',
-    'cover_small' => 'images/projects/ascento/cover-720.webp',
+    'cover' => 'images/projects/ascento/cover-v2.webp',
+    'cover_small' => 'images/projects/ascento/cover-v2-720.webp',
+
+    // Capturas de escritorio y de celular, por rol. Ver README.md, "Galería".
+    'gallery' => [
+        ['device' => 'desktop', 'image' => 'images/projects/ascento/gallery/landing.webp', 'image_small' => 'images/projects/ascento/gallery/landing-800.webp', 'caption' => ['es' => 'Sitio · Presentación del producto', 'pt' => 'Site · Apresentação do produto', 'en' => 'Website · Product landing']],
+        ['device' => 'desktop', 'image' => 'images/projects/ascento/gallery/admin-dashboard.webp', 'image_small' => 'images/projects/ascento/gallery/admin-dashboard-800.webp', 'caption' => ['es' => 'Empresa · Panel principal', 'pt' => 'Empresa · Painel principal', 'en' => 'Company · Dashboard']],
+        ['device' => 'desktop', 'image' => 'images/projects/ascento/gallery/admin-agenda.webp', 'image_small' => 'images/projects/ascento/gallery/admin-agenda-800.webp', 'caption' => ['es' => 'Empresa · Agenda de mantenimientos', 'pt' => 'Empresa · Agenda de manutenções', 'en' => 'Company · Maintenance schedule']],
+        ['device' => 'desktop', 'image' => 'images/projects/ascento/gallery/admin-maintenances.webp', 'image_small' => 'images/projects/ascento/gallery/admin-maintenances-800.webp', 'caption' => ['es' => 'Empresa · Mantenimientos y remitos', 'pt' => 'Empresa · Manutenções e comprovantes', 'en' => 'Company · Maintenance and delivery notes']],
+        ['device' => 'desktop', 'image' => 'images/projects/ascento/gallery/admin-indicators.webp', 'image_small' => 'images/projects/ascento/gallery/admin-indicators-800.webp', 'caption' => ['es' => 'Empresa · Indicadores', 'pt' => 'Empresa · Indicadores', 'en' => 'Company · Indicators']],
+        ['device' => 'desktop', 'image' => 'images/projects/ascento/gallery/client-portal.webp', 'image_small' => 'images/projects/ascento/gallery/client-portal-800.webp', 'caption' => ['es' => 'Cliente · Portal de la administración', 'pt' => 'Cliente · Portal da administradora', 'en' => 'Client · Building manager portal']],
+        ['device' => 'mobile', 'image' => 'images/projects/ascento/gallery/m-landing.webp', 'image_small' => null, 'caption' => ['es' => 'Sitio · Versión móvil', 'pt' => 'Site · Versão mobile', 'en' => 'Website · Mobile']],
+        ['device' => 'mobile', 'image' => 'images/projects/ascento/gallery/m-admin-dashboard.webp', 'image_small' => null, 'caption' => ['es' => 'Empresa · Panel', 'pt' => 'Empresa · Painel', 'en' => 'Company · Dashboard']],
+        ['device' => 'mobile', 'image' => 'images/projects/ascento/gallery/m-technician-home.webp', 'image_small' => null, 'caption' => ['es' => 'Técnico · Inicio del día', 'pt' => 'Técnico · Início do dia', 'en' => 'Technician · Today']],
+        ['device' => 'mobile', 'image' => 'images/projects/ascento/gallery/m-technician-visits.webp', 'image_small' => null, 'caption' => ['es' => 'Técnico · Visitas del mes', 'pt' => 'Técnico · Visitas do mês', 'en' => 'Technician · Monthly visits']],
+        ['device' => 'mobile', 'image' => 'images/projects/ascento/gallery/m-technician-reports.webp', 'image_small' => null, 'caption' => ['es' => 'Técnico · Reportes de fallas', 'pt' => 'Técnico · Relatos de falhas', 'en' => 'Technician · Fault reports']],
+        ['device' => 'mobile', 'image' => 'images/projects/ascento/gallery/m-client-portal.webp', 'image_small' => null, 'caption' => ['es' => 'Cliente · Portal', 'pt' => 'Cliente · Portal', 'en' => 'Client · Portal']],
+    ],
 
     'stack' => ['Laravel 13', 'PHP 8', 'Filament 5', 'Livewire', 'Alpine.js', 'Tailwind CSS', 'MySQL', 'Mercado Pago', 'WhatsApp Cloud API'],
 

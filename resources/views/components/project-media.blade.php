@@ -1,8 +1,12 @@
-@props(['project', 'eager' => false, 'sizes' => '(min-width: 1024px) 640px, 100vw'])
+@props(['project', 'eager' => false, 'sizes' => '(min-width: 1024px) 640px, 100vw', 'phone' => true])
 
-{{-- Browser-style frame around the product screenshot. Falls back to the
-     project logo/initial on its accent colour when there is no cover. --}}
-<div {{ $attributes->merge(['class' => 'relative']) }} style="--accent: {{ $project->accent }}">
+{{-- Browser-style frame around the product screenshot, with the first
+     mobile screenshot of the gallery in a phone frame over its corner.
+     Falls back to the project logo/initial on its accent colour when there
+     is no cover. --}}
+@php($phoneShot = $phone && $project->coverUrl ? $project->phoneShot() : null)
+
+<div {{ $attributes->merge(['class' => 'relative'.($phoneShot ? ' mb-6 mr-3 sm:mr-5' : '')]) }} style="--accent: {{ $project->accent }}">
     <div class="accent-glow pointer-events-none absolute -inset-8 -z-10 opacity-80 blur-2xl" aria-hidden="true"></div>
 
     <div class="overflow-hidden rounded-xl border border-line bg-raised shadow-2xl shadow-black/40">
@@ -38,4 +42,10 @@
             @endif
         </div>
     </div>
+
+    @if ($phoneShot)
+        <div class="absolute -bottom-6 -right-3 w-[23%] max-w-[150px] sm:-right-5">
+            <x-phone-frame :src="$phoneShot['url']" :alt="__('portfolio.gallery.phone_alt', ['name' => $project->name])" />
+        </div>
+    @endif
 </div>

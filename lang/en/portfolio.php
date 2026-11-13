@@ -77,6 +77,20 @@ return [
         'cta_text' => "Tell me how your team works today and we'll see if software can solve it.",
     ],
 
+    'gallery' => [
+        'eyebrow' => 'Screenshots',
+        'heading' => 'What it looks like inside',
+        'text' => 'Real product screens, on desktop and on mobile, for every type of user.',
+        'desktop' => 'Desktop',
+        'mobile' => 'Mobile',
+        'open' => 'Enlarge screenshot',
+        'close' => 'Close',
+        'previous' => 'Previous screenshot',
+        'next' => 'Next screenshot',
+        'shot_alt' => ':name — :caption',
+        'phone_alt' => ':name on a phone',
+    ],
+
     'about' => [
         'eyebrow' => 'About',
         'heading' => '10+ years building software that helps businesses grow.',

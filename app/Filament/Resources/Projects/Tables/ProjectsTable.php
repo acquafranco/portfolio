@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Projects\Tables;
 
 use App\Models\Project;
+use App\Portfolio\ProjectKind;
 use App\Portfolio\ProjectStatus;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -46,6 +47,11 @@ class ProjectsTable
                         ProjectStatus::Development => 'warning',
                         ProjectStatus::Experimental => 'info',
                     }),
+                TextColumn::make('kind')
+                    ->label('Tipo')
+                    ->badge()
+                    ->formatStateUsing(fn (ProjectKind $state): string => __('portfolio.projects.kind_'.$state->value, [], 'es'))
+                    ->color(fn (ProjectKind $state): string => $state === ProjectKind::Client ? 'info' : 'gray'),
                 IconColumn::make('is_featured')->label('Destacado')->boolean(),
                 ToggleColumn::make('is_published')->label('Publicado'),
                 TextColumn::make('url')
@@ -56,6 +62,11 @@ class ProjectsTable
                 TextColumn::make('updated_at')->label('Actualizado')->since()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('kind')
+                    ->label('Tipo')
+                    ->options(collect(ProjectKind::cases())->mapWithKeys(fn (ProjectKind $kind): array => [
+                        $kind->value => __('portfolio.projects.kind_'.$kind->value, [], 'es'),
+                    ])->all()),
                 SelectFilter::make('status')
                     ->label('Estado')
                     ->options(collect(ProjectStatus::cases())->mapWithKeys(fn (ProjectStatus $status): array => [

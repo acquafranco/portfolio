@@ -146,6 +146,7 @@ class ProjectRepository
             'order' => ['required', 'integer'],
             'featured' => ['required', 'boolean'],
             'status' => ['required', Rule::in(ProjectStatus::values())],
+            'kind' => ['nullable', Rule::in(ProjectKind::values())],
             'year' => ['nullable', 'integer', 'between:2000,2100'],
             'url' => ['nullable', 'url:https,http'],
             'repository' => ['nullable', 'url:https'],
@@ -168,6 +169,8 @@ class ProjectRepository
             "content.{$default}.features" => ['present', 'array'],
             "content.{$default}.audience" => ['nullable', 'string'],
             "content.{$default}.role" => ['nullable', 'string'],
+            "content.{$default}.testimonial" => ['nullable', 'string'],
+            "content.{$default}.testimonial_author" => ['nullable', 'string'],
         ]);
 
         foreach ($validator->errors()->all() as $message) {
@@ -201,6 +204,7 @@ class ProjectRepository
             order: (int) $definition['order'],
             featured: (bool) $definition['featured'],
             status: ProjectStatus::from($definition['status']),
+            kind: ProjectKind::tryFrom($definition['kind'] ?? '') ?? ProjectKind::Product,
             year: isset($definition['year']) ? (int) $definition['year'] : null,
             url: $definition['url'] ?? null,
             repository: $definition['repository'] ?? null,
@@ -221,6 +225,8 @@ class ProjectRepository
             features: array_values(array_filter($content['features'] ?? [], fn ($feature): bool => is_string($feature) && $feature !== '')),
             audience: $content['audience'] ?? null,
             role: $content['role'] ?? null,
+            testimonial: $content['testimonial'] ?? null,
+            testimonialAuthor: $content['testimonial_author'] ?? null,
         );
     }
 }

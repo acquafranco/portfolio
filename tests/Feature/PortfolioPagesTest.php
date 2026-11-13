@@ -174,7 +174,38 @@ class PortfolioPagesTest extends TestCase
             ->assertSee('https://github.com/acquafranco')
             ->assertSee('mailto:'.config('portfolio.links.email'), false)
             ->assertSee(config('portfolio.links.whatsapp').'?text='.rawurlencode(__('portfolio.contact.whatsapp_message', [], 'es')), false)
-            ->assertDontSee('github.com/francoacqua');
+            ->assertDontSee('github.com/francoacqua')
+            ->assertDontSee('linkedin', false);
+    }
+
+    public function test_the_hero_leads_with_the_years_of_experience(): void
+    {
+        $this->get('/es')
+            ->assertSee('+'.config('portfolio.years_programming'))
+            ->assertSee(__('portfolio.hero.facts.years', [], 'es'))
+            ->assertSee(__('portfolio.projects.heading', [], 'es'));
+    }
+
+    public function test_client_projects_are_labelled_and_show_their_testimonial(): void
+    {
+        Project::query()->where('slug', 'gula')->firstOrFail()->update([
+            'kind' => 'client',
+            'content' => array_replace_recursive(Project::query()->where('slug', 'gula')->value('content'), [
+                'es' => ['testimonial' => 'Nos ordenó el día a día.', 'testimonial_author' => 'Ana · Dueña, Restaurante'],
+            ]),
+        ]);
+
+        $this->get('/es')
+            ->assertSee(__('portfolio.projects.kind_client', [], 'es'))
+            ->assertSee(__('portfolio.projects.heading_with_clients', [], 'es'))
+            ->assertSee('Nos ordenó el día a día.');
+        $this->get('/pt/projects/gula')
+            ->assertSee(__('portfolio.projects.kind_client', [], 'pt'))
+            ->assertSee('Ana · Dueña, Restaurante');
+        // Own products carry no label and no empty testimonial box.
+        $this->get('/es/projects/ascento')
+            ->assertDontSee(__('portfolio.projects.kind_client', [], 'es'))
+            ->assertDontSee(__('portfolio.projects.testimonial', [], 'es'));
     }
 
     public function test_sitemap_lists_every_page_in_every_locale(): void

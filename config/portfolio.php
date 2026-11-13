@@ -17,6 +17,11 @@ return [
 
     'name' => 'Franco Acqua',
 
+    /*
+    | Años programando, para el dato "+10" del inicio. Mantenelo igual que en el CV.
+    */
+    'years_programming' => 10,
+
     'locales' => [
         'es' => ['label' => 'Español', 'og' => 'es_AR'],
         'pt' => ['label' => 'Português', 'og' => 'pt_BR'],
@@ -28,7 +33,6 @@ return [
     'links' => [
         'email' => 'acquafranco97@gmail.com',
         'whatsapp' => 'https://wa.me/5491178233886',
-        'linkedin' => 'https://www.linkedin.com/in/franco-acqua',
         'github' => 'https://github.com/acquafranco',
     ],
 
@@ -41,6 +45,15 @@ return [
         'pt' => 'cv/franco-acqua-cv-pt.pdf',
         'en' => 'cv/franco-acqua-cv-en.pdf',
     ],
+
+    /*
+    | CV: el contenido está en lang/{es,pt,en}/cv.php y los PDF se regeneran
+    | con `php artisan portfolio:cv` (necesita Google Chrome). public_url es
+    | la dirección pública que va en el CV y en su código QR.
+    */
+    'public_url' => env('PORTFOLIO_PUBLIC_URL', 'https://acquafranco.on-forge.com'),
+
+    'cv_chrome_path' => env('CV_CHROME_PATH'),
 
     /*
     | Stack agrupado. La etiqueta de cada grupo sale de

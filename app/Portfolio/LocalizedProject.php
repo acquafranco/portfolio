@@ -36,6 +36,9 @@ final readonly class LocalizedProject
         public array $features,
         public ?string $audience,
         public ?string $role,
+        public ?string $testimonial = null,
+        public ?string $testimonialAuthor = null,
+        public ProjectKind $kind = ProjectKind::Product,
     ) {}
 
     /**

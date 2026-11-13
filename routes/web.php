@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SeoController;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -26,6 +27,11 @@ Route::withoutMiddleware([
 
     Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
     Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
+
+    // First-party analytics beacon (see resources/js/analytics.js).
+    Route::post('/a/e', [AnalyticsController::class, 'store'])
+        ->middleware('throttle:60,1')
+        ->name('analytics.collect');
 
     Route::prefix('{locale}')
         ->whereIn('locale', array_keys(config('portfolio.locales')))

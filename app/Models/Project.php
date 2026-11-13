@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Portfolio\ProjectImageOptimizer;
+use App\Portfolio\ProjectKind;
 use App\Portfolio\ProjectStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Storage;
  * @property bool $is_featured
  * @property bool $is_published
  * @property ProjectStatus $status
+ * @property ProjectKind $kind
  * @property int|null $year
  * @property string|null $url
  * @property string|null $repository
@@ -38,7 +40,7 @@ class Project extends Model
     public const IMAGE_COLUMNS = ['logo_path', 'cover_path', 'cover_small_path'];
 
     protected $fillable = [
-        'slug', 'name', 'sort_order', 'is_featured', 'is_published', 'status', 'year', 'url',
+        'slug', 'name', 'sort_order', 'is_featured', 'is_published', 'status', 'kind', 'year', 'url',
         'repository', 'accent', 'logo_path', 'cover_path', 'cover_small_path', 'stack', 'content', 'links',
     ];
 
@@ -48,6 +50,7 @@ class Project extends Model
             'is_featured' => 'boolean',
             'is_published' => 'boolean',
             'status' => ProjectStatus::class,
+            'kind' => ProjectKind::class,
             'year' => 'integer',
             'sort_order' => 'integer',
             'stack' => 'array',
@@ -151,6 +154,7 @@ class Project extends Model
             'order' => $this->sort_order,
             'featured' => $this->is_featured,
             'status' => $this->status->value,
+            'kind' => ($this->kind ?? ProjectKind::Product)->value,
             'year' => $this->year,
             'url' => $this->url,
             'repository' => $this->repository,
@@ -188,6 +192,8 @@ class Project extends Model
             'stack' => $definition['stack'] ?? [],
             'content' => $definition['content'] ?? [],
             'links' => $definition['links'] ?? [],
+            // Optional: the column default ("product") applies when omitted.
+            ...(isset($definition['kind']) ? ['kind' => $definition['kind']] : []),
         ];
     }
 }

@@ -1,4 +1,5 @@
 import Alpine from 'alpinejs';
+import { initAnalytics } from './analytics';
 import { initSpotlight, initTerminals } from './terminal';
 
 /**
@@ -50,6 +51,7 @@ Alpine.start();
 
 initTerminals();
 initSpotlight();
+initAnalytics();
 
 // Stop the loading shimmer once each image has loaded (or failed).
 document.querySelectorAll('img[data-media]').forEach((img) => {

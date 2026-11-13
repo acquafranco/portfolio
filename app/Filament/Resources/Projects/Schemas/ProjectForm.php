@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\Schemas;
 
+use App\Portfolio\ProjectKind;
 use App\Portfolio\ProjectStatus;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
@@ -102,6 +103,15 @@ class ProjectForm
                                     ->label('Destacado')
                                     ->helperText('Tarjeta grande en la home.')
                                     ->default(true),
+                                Select::make('kind')
+                                    ->label('Tipo')
+                                    ->helperText('Los proyectos para clientes muestran la etiqueta "Proyecto para cliente".')
+                                    ->options(collect(ProjectKind::cases())->mapWithKeys(fn (ProjectKind $kind): array => [
+                                        $kind->value => __('portfolio.projects.kind_'.$kind->value, [], 'es'),
+                                    ])->all())
+                                    ->default(ProjectKind::Product->value)
+                                    ->required()
+                                    ->native(false),
                                 Select::make('status')
                                     ->label('Estado')
                                     ->options(collect(ProjectStatus::cases())->mapWithKeys(fn (ProjectStatus $status): array => [
@@ -201,6 +211,17 @@ class ProjectForm
                 Grid::make(2)->schema([
                     Textarea::make($field('audience'))->label('Para quién es')->rows(3)->maxLength(400),
                     Textarea::make($field('role'))->label('Mi rol')->rows(3)->maxLength(400),
+                ]),
+                Grid::make(2)->schema([
+                    Textarea::make($field('testimonial'))
+                        ->label('Testimonio del cliente')
+                        ->helperText('Solo opiniones reales, con permiso del cliente. Si queda vacío no se muestra nada.')
+                        ->rows(3)
+                        ->maxLength(400),
+                    TextInput::make($field('testimonial_author'))
+                        ->label('Quién lo dice')
+                        ->placeholder('Nombre · Cargo, Empresa')
+                        ->maxLength(120),
                 ]),
             ]);
     }

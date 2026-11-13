@@ -7,6 +7,7 @@
     $liveCount = $projects->filter(fn ($project) => $project->status === ProjectStatus::Production)->count();
     $featured = $projects->where('featured', true)->values();
     $others = $projects->where('featured', false)->values();
+    $hasClientWork = $projects->contains(fn ($project) => $project->kind === \App\Portfolio\ProjectKind::Client);
 
     $jsonLd = [
         '@context' => 'https://schema.org',
@@ -18,7 +19,7 @@
                 'jobTitle' => __('portfolio.seo.job_title'),
                 'url' => route('home'),
                 'email' => 'mailto:'.$links['email'],
-                'sameAs' => [$links['linkedin'], $links['github']],
+                'sameAs' => [$links['github']],
                 'knowsAbout' => ['Laravel', 'PHP', 'SaaS', 'Filament', 'Tailwind CSS', 'MySQL'],
             ],
             [
@@ -72,7 +73,7 @@
                     </a>
                     <a href="#contact" class="btn-secondary">{{ __('portfolio.hero.cta_contact') }}</a>
                     @if ($cv)
-                        <a href="{{ asset($cv) }}" class="btn-ghost" download>
+                        <a href="{{ asset($cv) }}" data-track="cv_download" class="btn-ghost" download>
                             <x-glyph name="download" />
                             {{ __('portfolio.hero.cta_cv') }}
                         </a>
@@ -81,8 +82,8 @@
 
                 <dl class="reveal reveal-4 mt-12 grid max-w-xl grid-cols-3 gap-6 border-t border-line pt-6">
                     <div class="flex flex-col-reverse justify-end">
-                        <dt class="mt-1 text-xs leading-snug text-subtle">{{ __('portfolio.hero.facts.products') }}</dt>
-                        <dd class="text-2xl font-semibold leading-8 tracking-tight text-fg">{{ $projects->count() }}</dd>
+                        <dt class="mt-1 text-xs leading-snug text-subtle">{{ __('portfolio.hero.facts.years') }}</dt>
+                        <dd class="text-2xl font-semibold leading-8 tracking-tight text-fg">+{{ config('portfolio.years_programming') }}</dd>
                     </div>
                     <div class="flex flex-col-reverse justify-end">
                         <dt class="mt-1 text-xs leading-snug text-subtle">{{ __('portfolio.hero.facts.live') }}</dt>
@@ -109,7 +110,7 @@
                 <x-section-heading
                     id="projects-title"
                     :eyebrow="__('portfolio.projects.eyebrow')"
-                    :title="__('portfolio.projects.heading')"
+                    :title="$hasClientWork ? __('portfolio.projects.heading_with_clients') : __('portfolio.projects.heading')"
                     :lead="__('portfolio.projects.intro')"
                     class="md:mb-14"
                 />
@@ -241,13 +242,13 @@
                         <p class="mt-4 max-w-xl text-lg leading-relaxed text-muted">{{ __('portfolio.contact.intro') }}</p>
 
                         <div class="mt-8 flex flex-wrap gap-3">
-                            <a href="{{ Localization::whatsappUrl() }}" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                            <a href="{{ Localization::whatsappUrl() }}" data-track="whatsapp_click" target="_blank" rel="noopener noreferrer" class="btn-primary">
                                 <x-glyph name="chat" />
                                 {{ __('portfolio.contact.cta') }}
                                 <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
                             </a>
                             @if ($cv)
-                                <a href="{{ asset($cv) }}" class="btn-secondary" download>
+                                <a href="{{ asset($cv) }}" data-track="cv_download" class="btn-secondary" download>
                                     <x-glyph name="download" />
                                     {{ __('portfolio.hero.cta_cv') }}
                                 </a>
@@ -258,23 +259,21 @@
                     <ul class="space-y-2 lg:col-span-5">
                         <li x-data="copyText(@js($links['email']))" class="flex items-center gap-2 rounded-xl border border-line bg-ink/60 p-1.5 pl-4">
                             <x-glyph name="mail" class="text-subtle" />
-                            <a href="mailto:{{ $links['email'] }}" class="min-w-0 flex-1 truncate py-2 text-sm text-fg hover:underline">{{ $links['email'] }}</a>
-                            <button type="button" @click="copy()" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs text-muted transition-colors hover:bg-raised hover:text-fg">
+                            <a href="mailto:{{ $links['email'] }}" data-track="email_click" class="min-w-0 flex-1 truncate py-2 text-sm text-fg hover:underline">{{ $links['email'] }}</a>
+                            <button type="button" @click="copy()" data-track="email_copy" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs text-muted transition-colors hover:bg-raised hover:text-fg">
                                 <span x-show="!copied" class="inline-flex items-center gap-1.5"><x-glyph name="copy" :size="14" /> {{ __('portfolio.contact.copy') }}</span>
                                 <span x-show="copied" x-cloak class="inline-flex items-center gap-1.5 text-live"><x-glyph name="check" :size="14" /> {{ __('portfolio.contact.copied') }}</span>
                             </button>
                             <span class="sr-only" role="status" aria-live="polite" x-text="copied ? @js(__('portfolio.contact.copied')) : ''"></span>
                         </li>
-                        @foreach (['linkedin' => 'linkedin', 'github' => 'github'] as $key => $icon)
-                            <li>
-                                <a href="{{ $links[$key] }}" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2 rounded-xl border border-line bg-ink/60 px-4 py-3.5 text-sm text-fg transition-colors hover:border-subtle/60">
-                                    <x-glyph :name="$icon" class="text-subtle" />
-                                    <span class="flex-1">{{ __("portfolio.contact.{$key}") }}</span>
-                                    <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
-                                    <x-glyph name="arrow-up-right" class="text-subtle transition-colors group-hover:text-fg" />
-                                </a>
-                            </li>
-                        @endforeach
+                        <li>
+                            <a href="{{ $links['github'] }}" data-track="github_click" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2 rounded-xl border border-line bg-ink/60 px-4 py-3.5 text-sm text-fg transition-colors hover:border-subtle/60">
+                                <x-glyph name="github" class="text-subtle" />
+                                <span class="flex-1">{{ __('portfolio.contact.github') }}</span>
+                                <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
+                                <x-glyph name="arrow-up-right" class="text-subtle transition-colors group-hover:text-fg" />
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>

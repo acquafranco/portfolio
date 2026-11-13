@@ -5,15 +5,11 @@
         <p>&copy; {{ date('Y') }} · {{ __('portfolio.footer.text') }}</p>
 
         <div class="flex items-center gap-5">
-            <a href="{{ $links['github'] }}" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-fg">
+            <a href="{{ $links['github'] }}" data-track="github_click" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-fg">
                 <span class="sr-only">GitHub {{ __('portfolio.projects.opens_new_tab') }}</span>
                 <x-glyph name="github" :size="18" />
             </a>
-            <a href="{{ $links['linkedin'] }}" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-fg">
-                <span class="sr-only">LinkedIn {{ __('portfolio.projects.opens_new_tab') }}</span>
-                <x-glyph name="linkedin" :size="18" />
-            </a>
-            <a href="mailto:{{ $links['email'] }}" class="transition-colors hover:text-fg">
+            <a href="mailto:{{ $links['email'] }}" data-track="email_click" class="transition-colors hover:text-fg">
                 <span class="sr-only">{{ __('portfolio.contact.email') }}</span>
                 <x-glyph name="mail" :size="18" />
             </a>

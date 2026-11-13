@@ -17,7 +17,10 @@
                         <p class="font-mono text-xs text-subtle">{{ $project->category }}</p>
                     </div>
                 </div>
-                <x-status-badge :status="$project->status" />
+                <div class="flex flex-wrap items-center gap-2">
+                    <x-kind-badge :kind="$project->kind" />
+                    <x-status-badge :status="$project->status" />
+                </div>
             </div>
 
             <p class="text-2xl font-semibold leading-snug tracking-tight text-fg sm:text-[1.7rem]">{{ $project->tagline }}</p>
@@ -32,6 +35,8 @@
                 @endforeach
             </ul>
 
+            <x-project-testimonial :project="$project" class="mt-6" />
+
             <ul class="mt-6 flex flex-wrap gap-1.5" aria-label="{{ __('portfolio.projects.stack') }}">
                 @foreach (array_slice($project->stack, 0, 6) as $tech)
                     <li class="chip">{{ $tech }}</li>
@@ -45,7 +50,7 @@
                     <x-glyph name="arrow-right" />
                 </a>
                 @if ($project->url)
-                    <a href="{{ $project->url }}" target="_blank" rel="noopener" class="btn-secondary">
+                    <a href="{{ $project->url }}" data-track="project_link" target="_blank" rel="noopener" class="btn-secondary">
                         {{ $project->domain() }}
                         <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
                         <x-glyph name="arrow-up-right" />

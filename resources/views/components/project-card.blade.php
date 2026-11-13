@@ -8,7 +8,10 @@
 >
     <div class="mb-5 flex items-start justify-between gap-3">
         <x-project-logo :project="$project" :size="36" />
-        <x-status-badge :status="$project->status" />
+        <div class="flex flex-wrap justify-end gap-2">
+            <x-kind-badge :kind="$project->kind" />
+            <x-status-badge :status="$project->status" />
+        </div>
     </div>
 
     <h3 id="project-{{ $project->slug }}" class="text-lg font-semibold tracking-tight text-fg">

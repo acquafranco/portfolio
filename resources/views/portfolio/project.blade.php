@@ -44,6 +44,7 @@
                     <div class="lg:col-span-6">
                         <div class="reveal flex flex-wrap items-center gap-3">
                             <x-project-logo :project="$project" :size="48" />
+                            <x-kind-badge :kind="$project->kind" />
                             <x-status-badge :status="$project->status" />
                         </div>
 
@@ -53,7 +54,7 @@
 
                         <div class="reveal reveal-4 mt-8 flex flex-wrap gap-3">
                             @if ($project->url)
-                                <a href="{{ $project->url }}" target="_blank" rel="noopener" class="btn-primary">
+                                <a href="{{ $project->url }}" data-track="project_link" target="_blank" rel="noopener" class="btn-primary">
                                     {{ __('portfolio.projects.visit') }}
                                     <span class="sr-only">{{ __('portfolio.projects.opens_new_tab') }}</span>
                                     <x-glyph name="arrow-up-right" />
@@ -97,7 +98,7 @@
                         <div class="flex justify-between gap-4 px-5 py-3.5 text-sm">
                             <dt class="text-subtle">{{ __('portfolio.project.website') }}</dt>
                             <dd class="min-w-0 truncate text-right">
-                                <a href="{{ $project->url }}" target="_blank" rel="noopener" class="link-underline text-fg">{{ $project->domain() }}</a>
+                                <a href="{{ $project->url }}" data-track="project_link" target="_blank" rel="noopener" class="link-underline text-fg">{{ $project->domain() }}</a>
                             </dd>
                         </div>
                     @endif
@@ -139,6 +140,8 @@
                         @endforeach
                     </ul>
                 </section>
+
+                <x-project-testimonial :project="$project" class="p-6 md:p-8" />
 
                 @if ($project->audience || $project->role)
                     <section class="grid gap-10 border-t border-line pt-12 md:grid-cols-2" aria-label="{{ __('portfolio.project.overview') }}">

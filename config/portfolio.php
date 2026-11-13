@@ -77,7 +77,7 @@ return [
         ['key' => 'fullstack', 'period_key' => 'decade'],
     ],
 
-    'capabilities' => ['product', 'saas', 'automation', 'interfaces', 'business'],
+    'capabilities' => ['websites', 'ecommerce', 'webapps', 'business', 'saas', 'automation'],
 
     'process_steps' => ['understand', 'design', 'build', 'test', 'iterate', 'ship'],
 

@@ -6,14 +6,14 @@
 */
 
 return [
-    'role' => 'Full-Stack Developer & Product Builder — SaaS and custom software (Laravel/PHP)',
+    'role' => 'Full-Stack Developer — Websites, apps, custom systems and SaaS (Laravel/PHP)',
     'location' => 'Brazil / Argentina',
     'qr_whatsapp' => 'Message me on WhatsApp',
     'qr_portfolio' => 'View portfolio',
     'whatsapp_message' => 'Hi Franco! I saw your resume and I\'d like to talk about a project.',
 
     'headings' => [
-        'profile' => 'Profile',
+        'profile' => 'Full-stack developer with <b>more than :years years of programming</b>, since my training as a Computer Technician, and building client projects since 2019. I build what each business needs: websites and landing pages, online stores, web apps, custom systems and SaaS platforms. I handle the whole process —understanding the goal, design, development, deployment and support— and I also created and run my own products: <b>Ascento</b> and <b>DOMUS</b> in production, <b>GULA</b> in development.',
         'services' => 'What I do',
         'skills' => 'Technical skills',
         'experience' => 'Experience',
@@ -24,11 +24,12 @@ return [
     'profile' => 'Full-stack developer with <b>more than :years years of programming</b>, since my training as a Computer Technician, and building software for real businesses since 2019. I design, build and ship complete products: I learn how the operation really works, find exactly where it breaks and turn it into a system that runs on its own. I created and run my own SaaS products —<b>Ascento</b> and <b>DOMUS</b> in production, <b>GULA</b> in development— and build custom systems for companies that have outgrown paper, spreadsheets and WhatsApp groups.',
 
     'services' => [
-        'Multi-tenant SaaS products: users, roles, plans and per-client data isolation',
-        'Custom management systems and admin panels for the office and the field team',
-        'Automation and integrations: Mercado Pago, WhatsApp Cloud API, e-invoicing, maps and notifications',
-        'Fast, responsive websites and landing pages built to generate leads',
-        'Production deployment, maintenance and ongoing support',
+        'Fast, responsive websites and landing pages built to turn visitors into clients',
+        'Online stores with catalog, cart, Mercado Pago payments and order management',
+        'Web apps and PWAs: bookings, scheduling, client portals',
+        'Custom systems and admin panels for internal operations',
+        'Multi-tenant SaaS platforms with users, roles, plans and subscriptions',
+        'Integrations: Mercado Pago, WhatsApp Cloud API, e-invoicing, maps and APIs',
     ],
 
     'skills' => [
@@ -53,12 +54,12 @@ return [
         ],
         [
             'title' => 'Freelance Web Developer',
-            'subtitle' => 'Custom software for clients',
+            'subtitle' => 'Client projects',
             'period' => '2019 — Present',
             'items' => [
-                'Internal systems, management dashboards and integrations for businesses that needed to bring order to their operations.',
-                'Corporate websites and landing pages across industries, including hospitality, food service and tourism.',
-                'Full ownership: understanding the problem, design, development, production deployment and maintenance.',
+                'Corporate websites, landing pages and online stores across industries, including hospitality, food service and tourism.',
+                'Custom apps and systems: management dashboards, payment integrations and automations.',
+                'Full ownership: discovery, design, development, deployment, maintenance and support.',
             ],
         ],
     ],

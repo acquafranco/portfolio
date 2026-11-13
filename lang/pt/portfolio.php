@@ -24,8 +24,8 @@ return [
 
     'hero' => [
         'availability' => 'Disponível para projetos · Brasil',
-        'headline' => 'Construo produtos digitais que organizam negócios reais.',
-        'subheadline' => 'Desenvolvedor full-stack e criador de produtos SaaS. Projeto, programo e coloco em produção software para operações que hoje vivem em papéis, planilhas e grupos de WhatsApp.',
+        'headline' => 'Desenvolvo sites, aplicativos e plataformas que fazem negócios crescerem.',
+        'subheadline' => 'Desenvolvedor full-stack com mais de 10 anos de experiência. De uma landing page ou loja virtual a um sistema sob medida ou uma plataforma SaaS: eu desenho, programo e coloco em produção.',
         'cta_projects' => 'Ver produtos',
         'cta_contact' => 'Vamos conversar',
         'cta_cv' => 'Baixar CV',
@@ -45,7 +45,7 @@ return [
         'eyebrow' => 'Produtos',
         'heading' => 'Produtos próprios: a prova do que posso construir para você.',
         'heading_with_clients' => 'Produtos próprios e projetos para clientes, com o mesmo padrão.',
-        'intro' => 'Não são maquetes nem exercícios. São SaaS que desenhei e programei de ponta a ponta, e que opero em produção. É o mesmo padrão que levo a cada projeto para clientes.',
+        'intro' => 'Não são maquetes nem exercícios: são produtos que desenhei, programei e opero em produção. É o mesmo padrão que levo a cada projeto, seja uma landing page, uma loja virtual ou um sistema completo.',
         'kind_product' => 'Produto próprio',
         'kind_client' => 'Projeto para cliente',
         'testimonial' => 'O que diz o cliente',
@@ -79,36 +79,40 @@ return [
 
     'about' => [
         'eyebrow' => 'Sobre mim',
-        'heading' => 'Mais de 10 anos transformando caos operacional em software que trabalha por você.',
+        'heading' => 'Mais de 10 anos construindo software que faz negócios crescerem.',
         'paragraphs' => [
-            'Tem negócio que funciona apesar das suas ferramentas: pedidos que se perdem num grupo de WhatsApp, planilhas que só uma pessoa entende, clientes que ligam para perguntar algo que ninguém sabe responder. Todo dia, essa bagunça custa dinheiro, tempo e confiança.',
-            'Há mais de 10 anos construo software e aprendi que o problema quase nunca é técnico: é entender como as pessoas trabalham de verdade. Por isso, antes de escrever uma linha de código, mergulho na operação, escuto quem sofre com ela e encontro exatamente onde ela quebra.',
-            'Hoje desenho, desenvolvo e coloco em produção produtos completos como Ascento, GULA e DOMUS. Moro no Brasil e trabalho com empresas que querem parar de apagar incêndios e começar a crescer com um sistema que as sustente.',
+            'Software bom se nota: o site que transforma visitas em clientes, a loja que vende enquanto você dorme, o sistema que economiza horas da sua equipe. O ruim também: cai, ninguém entende e acaba custando mais do que resolveu.',
+            'Há mais de 10 anos construo software e aprendi que o problema quase nunca é técnico: é entender o que o seu negócio realmente precisa. Por isso, antes de escrever uma linha de código, escuto, pergunto e defino o que o projeto precisa alcançar.',
+            'Hoje faço projetos de todos os tamanhos: sites, lojas virtuais, aplicativos, sistemas sob medida e meus próprios SaaS, como Ascento, GULA e DOMUS. Moro no Brasil, trabalho de forma remota e cuido de tudo: design, desenvolvimento, colocação em produção e suporte.',
         ],
     ],
 
     'capabilities' => [
         'heading' => 'O que eu faço',
         'items' => [
-            'product' => [
-                'title' => 'Produtos de ponta a ponta',
-                'description' => 'Da ideia à produção, sem parar no protótipo.',
+            'websites' => [
+                'title' => 'Sites e landing pages',
+                'description' => 'Rápidos, responsivos e pensados para transformar visitas em contatos e clientes.',
             ],
-            'saas' => [
-                'title' => 'SaaS multiempresa',
-                'description' => 'Usuários, papéis, planos e dados isolados por cliente, pensados para crescer.',
+            'ecommerce' => [
+                'title' => 'Lojas virtuais',
+                'description' => 'Catálogo, carrinho, pagamentos com Mercado Pago e gestão de pedidos e estoque.',
             ],
-            'automation' => [
-                'title' => 'Automação e integrações',
-                'description' => 'Pagamentos, mensagens, mapas e faturamento conectados para eliminar trabalho manual.',
-            ],
-            'interfaces' => [
-                'title' => 'Interfaces para o dia a dia',
-                'description' => 'Telas claras para o escritório e para o celular de quem está em campo.',
+            'webapps' => [
+                'title' => 'Aplicações web',
+                'description' => 'Reservas, agendamentos, portais de clientes e apps que se instalam no celular.',
             ],
             'business' => [
-                'title' => 'Software sob medida',
-                'description' => 'Soluções para um problema específico de uma empresa, não um template.',
+                'title' => 'Sistemas sob medida',
+                'description' => 'Gestão interna, painéis administrativos e processos feitos para o jeito que o seu negócio trabalha.',
+            ],
+            'saas' => [
+                'title' => 'Plataformas SaaS',
+                'description' => 'Multiempresa, com usuários, papéis, planos e assinaturas, prontas para crescer.',
+            ],
+            'automation' => [
+                'title' => 'Integrações e automação',
+                'description' => 'Pagamentos, WhatsApp, faturamento eletrônico, mapas e APIs conectados para eliminar trabalho manual.',
             ],
         ],
     ],
@@ -152,8 +156,8 @@ return [
                 'description' => 'Desenho, desenvolvo e opero meus próprios produtos de ponta a ponta: Ascento, GULA e DOMUS. Da pesquisa com clientes reais à infraestrutura, pagamentos e suporte. Software que resolve problemas pelos quais as empresas pagam.',
             ],
             'custom' => [
-                'title' => 'Software sob medida para empresas',
-                'description' => 'Sistemas internos, painéis de gestão e integrações para negócios que chegaram ao limite das planilhas e do WhatsApp. Todo projeto começa igual: entender o que está travando a empresa e eliminar isso.',
+                'title' => 'Projetos web para clientes',
+                'description' => 'Sites, landing pages, lojas virtuais, aplicativos e sistemas sob medida para clientes de diversos ramos, como hotelaria, gastronomia e turismo. Todo projeto começa igual: entender o que o negócio precisa e construir exatamente isso.',
             ],
             'fullstack' => [
                 'title' => 'Desenvolvedor full-stack',
@@ -164,8 +168,8 @@ return [
 
     'contact' => [
         'eyebrow' => 'Contato',
-        'heading' => 'Me conte o que está travando o seu negócio.',
-        'intro' => 'Se a sua operação vive em planilhas, papéis ou grupos de WhatsApp, existe um jeito melhor de trabalhar. Me conte como vocês fazem hoje e, numa primeira conversa, eu digo o que dá para automatizar e por onde vale a pena começar.',
+        'heading' => 'Me conte o que você quer construir.',
+        'intro' => 'Um site novo, uma loja virtual, um aplicativo ou um sistema para a sua equipe: me conte o que você tem em mente. Numa primeira conversa vemos o que vale a pena fazer, quanto pode levar e por onde começar.',
         'cta' => 'Falar pelo WhatsApp',
         'email' => 'E-mail',
         'whatsapp' => 'WhatsApp',
@@ -181,7 +185,7 @@ return [
 
     'seo' => [
         'title' => 'Franco Acqua — Full-Stack Developer & Product Builder',
-        'description' => 'Desenvolvedor full-stack e criador de produtos SaaS com Laravel. Ascento, GULA e DOMUS: software que organiza negócios reais.',
+        'description' => 'Desenvolvedor full-stack com mais de 10 anos de experiência: sites, lojas virtuais, aplicativos, sistemas sob medida e plataformas SaaS com Laravel.',
         'job_title' => 'Full-Stack Developer & Product Builder',
     ],
 

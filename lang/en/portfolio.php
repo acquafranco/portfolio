@@ -24,8 +24,8 @@ return [
 
     'hero' => [
         'availability' => 'Available for projects · Brazil',
-        'headline' => 'I build digital products that bring order to real businesses.',
-        'subheadline' => 'Full-stack developer and SaaS product builder. I design, code and ship software for operations that still run on paper, spreadsheets and WhatsApp groups.',
+        'headline' => 'I build websites, apps and platforms that help businesses grow.',
+        'subheadline' => 'Full-stack developer with 10+ years of experience. From a landing page or an online store to a custom system or a SaaS platform: I design it, build it and ship it to production.',
         'cta_projects' => 'See products',
         'cta_contact' => "Let's talk",
         'cta_cv' => 'Download CV',
@@ -45,7 +45,7 @@ return [
         'eyebrow' => 'Products',
         'heading' => 'My own products: proof of what I can build for you.',
         'heading_with_clients' => 'My own products and client projects, built to the same standard.',
-        'intro' => 'Not mockups or side exercises. These are SaaS products I designed and built end to end, and run in production. It is the same standard I bring to every client project.',
+        'intro' => 'Not mockups or side exercises: these are products I designed, built and run in production. It is the same standard I bring to every project, whether it is a landing page, an online store or a full system.',
         'kind_product' => 'Own product',
         'kind_client' => 'Client project',
         'testimonial' => 'What the client says',
@@ -79,36 +79,40 @@ return [
 
     'about' => [
         'eyebrow' => 'About',
-        'heading' => '10+ years turning operational chaos into software that works for you.',
+        'heading' => '10+ years building software that helps businesses grow.',
         'paragraphs' => [
-            'Some businesses run in spite of their tools: orders lost in a WhatsApp group, spreadsheets only one person understands, clients calling to ask something nobody can answer. Every day, that mess costs money, time and trust.',
-            'I\'ve been building software for more than 10 years, and I\'ve learned the problem is rarely technical: it\'s understanding how people actually work. So before writing a single line of code, I dig into the operation, listen to the people living with it and find exactly where it breaks.',
-            'Today I design, build and ship complete products like Ascento, GULA and DOMUS. I live in Brazil and work with companies that want to stop putting out fires and start growing on a system that has their back.',
+            'Good software shows: the website that turns visitors into clients, the store that sells while you sleep, the system that saves your team hours every week. Bad software shows too: it breaks, nobody understands it and it ends up costing more than it solved.',
+            'I\'ve been building software for more than 10 years, and I\'ve learned the problem is rarely technical: it\'s understanding what your business actually needs. So before writing a single line of code, I listen, ask questions and define what the project has to achieve.',
+            'Today I build projects of every size: websites, online stores, apps, custom systems and my own SaaS products, like Ascento, GULA and DOMUS. I live in Brazil, work remotely and handle everything: design, development, deployment and support.',
         ],
     ],
 
     'capabilities' => [
         'heading' => 'What I do',
         'items' => [
-            'product' => [
-                'title' => 'End-to-end products',
-                'description' => 'From idea to production, never stopping at the prototype.',
+            'websites' => [
+                'title' => 'Websites and landing pages',
+                'description' => 'Fast, responsive and built to turn visitors into leads and clients.',
             ],
-            'saas' => [
-                'title' => 'Multi-tenant SaaS',
-                'description' => 'Users, roles, plans and per-client data isolation, built to grow.',
+            'ecommerce' => [
+                'title' => 'Online stores',
+                'description' => 'Catalog, cart, Mercado Pago payments, and order and stock management.',
             ],
-            'automation' => [
-                'title' => 'Automation & integrations',
-                'description' => 'Payments, messaging, maps and invoicing wired together to remove manual work.',
-            ],
-            'interfaces' => [
-                'title' => 'Everyday interfaces',
-                'description' => 'Clear screens for the office and for the phone of whoever is in the field.',
+            'webapps' => [
+                'title' => 'Web apps',
+                'description' => 'Bookings, scheduling, client portals and apps that install on your phone.',
             ],
             'business' => [
-                'title' => 'Custom software',
-                'description' => "Solutions for a company's specific problem, not a template.",
+                'title' => 'Custom systems',
+                'description' => 'Internal tools, admin panels and workflows built around how your business works.',
+            ],
+            'saas' => [
+                'title' => 'SaaS platforms',
+                'description' => 'Multi-tenant, with users, roles, plans and subscriptions, ready to scale.',
+            ],
+            'automation' => [
+                'title' => 'Integrations and automation',
+                'description' => 'Payments, WhatsApp, e-invoicing, maps and APIs connected to remove manual work.',
             ],
         ],
     ],
@@ -152,8 +156,8 @@ return [
                 'description' => 'I design, build and run my own products end to end: Ascento, GULA and DOMUS. From research with real clients to infrastructure, payments and support. Software that solves problems companies are willing to pay for.',
             ],
             'custom' => [
-                'title' => 'Custom software for businesses',
-                'description' => 'Internal systems, management dashboards and integrations for businesses that outgrew spreadsheets and WhatsApp. Every project starts the same way: understanding what is holding the company back, and removing it.',
+                'title' => 'Web projects for clients',
+                'description' => 'Websites, landing pages, online stores, apps and custom systems for clients across industries such as hospitality, food service and tourism. Every project starts the same way: understanding what the business needs and building exactly that.',
             ],
             'fullstack' => [
                 'title' => 'Full-stack developer',
@@ -164,8 +168,8 @@ return [
 
     'contact' => [
         'eyebrow' => 'Contact',
-        'heading' => 'Tell me what\'s holding your business back.',
-        'intro' => 'If your operation runs on spreadsheets, paper or WhatsApp groups, there is a better way to work. Tell me how your team does it today and, in a first call, I\'ll tell you what can be automated and where it makes sense to start.',
+        'heading' => 'Tell me what you want to build.',
+        'intro' => 'A new website, an online store, an app or a system for your team: tell me what you have in mind. In a first call we\'ll see what makes sense to build, how long it could take and where to start.',
         'cta' => 'Message on WhatsApp',
         'email' => 'Email',
         'whatsapp' => 'WhatsApp',
@@ -181,7 +185,7 @@ return [
 
     'seo' => [
         'title' => 'Franco Acqua — Full-Stack Developer & Product Builder',
-        'description' => 'Full-stack developer and SaaS product builder working with Laravel. Ascento, GULA and DOMUS: software that brings order to real businesses.',
+        'description' => 'Full-stack developer with 10+ years of experience: websites, online stores, apps, custom systems and SaaS platforms built with Laravel.',
         'job_title' => 'Full-Stack Developer & Product Builder',
     ],
 

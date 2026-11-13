@@ -165,7 +165,7 @@
                 <div class="lg:col-span-7">
                     <h3 class="mb-5 font-mono text-xs uppercase tracking-wider text-subtle">{{ __('portfolio.capabilities.heading') }}</h3>
                     @php
-                        $capabilityIcons = ['product' => 'box', 'saas' => 'layers', 'automation' => 'zap', 'interfaces' => 'layout', 'business' => 'wrench'];
+                        $capabilityIcons = ['websites' => 'globe', 'ecommerce' => 'cart', 'webapps' => 'smartphone', 'business' => 'wrench', 'saas' => 'layers', 'automation' => 'zap'];
                     @endphp
                     <ul class="grid gap-4 sm:grid-cols-2">
                         @foreach (config('portfolio.capabilities') as $key)

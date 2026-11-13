@@ -6,14 +6,14 @@
 */
 
 return [
-    'role' => 'Full-Stack Developer & Product Builder — SaaS e software sob medida (Laravel/PHP)',
+    'role' => 'Full-Stack Developer — Sites, aplicativos, sistemas sob medida e SaaS (Laravel/PHP)',
     'location' => 'Brasil / Argentina',
     'qr_whatsapp' => 'Fale comigo pelo WhatsApp',
     'qr_portfolio' => 'Ver portfólio',
     'whatsapp_message' => 'Olá Franco! Vi seu currículo e gostaria de conversar sobre um projeto.',
 
     'headings' => [
-        'profile' => 'Perfil',
+        'profile' => 'Desenvolvedor full-stack com <b>mais de :years anos programando</b>, desde minha formação como Técnico em Informática, e desde 2019 desenvolvendo projetos para clientes. Construo o que cada negócio precisa: sites e landing pages, lojas virtuais, aplicações web, sistemas sob medida e plataformas SaaS. Cuido de todo o processo —entender o objetivo, desenhar, programar, colocar em produção e dar suporte— e também criei e opero meus próprios produtos: <b>Ascento</b> e <b>DOMUS</b> em produção, <b>GULA</b> em desenvolvimento.',
         'services' => 'O que faço',
         'skills' => 'Habilidades técnicas',
         'experience' => 'Experiência',
@@ -24,11 +24,12 @@ return [
     'profile' => 'Desenvolvedor full-stack com <b>mais de :years anos programando</b>, desde minha formação como Técnico em Informática, e desde 2019 construindo software para negócios reais. Desenho, desenvolvo e coloco em produção produtos completos: entendo como a operação funciona, encontro onde ela quebra e a transformo em um sistema que funciona sozinho. Criei e opero meus próprios produtos SaaS —<b>Ascento</b> e <b>DOMUS</b> em produção, <b>GULA</b> em desenvolvimento— e construo sistemas sob medida para empresas que chegaram ao limite dos papéis, das planilhas e dos grupos de WhatsApp.',
 
     'services' => [
-        'Produtos SaaS multiempresa: usuários, papéis, planos e dados isolados por cliente',
-        'Sistemas de gestão e painéis administrativos sob medida para o escritório e a equipe em campo',
-        'Automação e integrações: Mercado Pago, WhatsApp Cloud API, faturamento eletrônico, mapas e notificações',
-        'Sites e landing pages rápidos e responsivos, pensados para gerar contatos',
-        'Colocação em produção, manutenção e suporte contínuo',
+        'Sites e landing pages rápidos e responsivos, pensados para transformar visitas em clientes',
+        'Lojas virtuais com catálogo, carrinho, pagamentos com Mercado Pago e gestão de pedidos',
+        'Aplicações web e PWA: reservas, agendamentos, portais de clientes',
+        'Sistemas sob medida e painéis administrativos para a gestão interna',
+        'Plataformas SaaS multiempresa com usuários, papéis, planos e assinaturas',
+        'Integrações: Mercado Pago, WhatsApp Cloud API, faturamento eletrônico, mapas e APIs',
     ],
 
     'skills' => [
@@ -53,12 +54,12 @@ return [
         ],
         [
             'title' => 'Desenvolvedor Web Freelancer',
-            'subtitle' => 'Software sob medida para clientes',
+            'subtitle' => 'Projetos para clientes',
             'period' => '2019 — Atualmente',
             'items' => [
-                'Sistemas internos, painéis de gestão e integrações para negócios que precisavam organizar sua operação.',
-                'Sites institucionais e landing pages para diversos ramos, incluindo hotelaria, gastronomia e turismo.',
-                'Acompanhamento completo: levantamento do problema, design, desenvolvimento, colocação em produção e manutenção.',
+                'Sites institucionais, landing pages e lojas virtuais para diversos ramos, incluindo hotelaria, gastronomia e turismo.',
+                'Aplicativos e sistemas sob medida: painéis de gestão, integrações de pagamento e automações.',
+                'Acompanhamento completo: levantamento, design, desenvolvimento, colocação em produção, manutenção e suporte.',
             ],
         ],
     ],
